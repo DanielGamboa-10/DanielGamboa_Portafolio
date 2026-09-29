@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2.1" />
 
   <!-- Librería Three.js (Sin dependencias externas ni texturas bloqueantes) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -571,6 +571,15 @@
   </div>
 
   <!-- Script principal del portafolio (cargado con DOMContentLoaded) -->
-  <script src="main.js"></script>
+  <script src="main.js?v=2.1"></script>
+
+  <!-- Respaldo de seguridad garantizado para mostrar el portafolio -->
+  <script>
+    setTimeout(function() {
+      document.body.classList.remove('splash-active');
+      var pc = document.getElementById('portfolio-content');
+      if (pc) pc.classList.add('visible');
+    }, 3800);
+  </script>
 </body>
 </html>
