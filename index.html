@@ -1,342 +1,576 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Portafolio de Daniel Eduardo Jaimes Gamboa — Desarrollador Frontend en formación apasionado por construir experiencias digitales." />
-  <title>Daniel Jaimes | Dev Portfolio</title>
+  <meta name="description" content="Portafolio de Daniel Gamboa (Daniel Eduardo Jaimes Gamboa) — Desarrollador Frontend en formación apasionado por construir experiencias digitales." />
+  <title>Daniel Gamboa | Dev Portfolio ⚡</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Librería Three.js (Sin dependencias externas ni texturas bloqueantes) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
-<body>
+<body class="splash-active">
 
-<!-- NAV -->
-<nav role="navigation" aria-label="Navegación principal">
-  <a href="#hero" class="nav-logo">daniel<span>.dev</span></a>
-  <ul class="nav-links" role="list">
-    <li><a href="#about">Sobre mí</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Proyectos</a></li>
-    <li><a href="#contact" class="nav-cta">Contacto</a></li>
-  </ul>
-  <button class="hamburger" aria-label="Abrir menú" aria-expanded="false" id="hamburgerBtn">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+  <!-- 1. THREE.JS CANVAS (Z-INDEX: 0, TRANSPARENTE, ACOMPAÑA TODO EL SCROLL) -->
+  <div id="webgl-container"></div>
 
-<div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Menú móvil">
-  <a href="#about" class="mobile-link">Sobre mí</a>
-  <a href="#skills" class="mobile-link">Skills</a>
-  <a href="#projects" class="mobile-link">Proyectos</a>
-  <a href="#contact" class="mobile-link mobile-cta">Contacto</a>
-</div>
+  <!-- 2. DESTELLO DE LUZ RADIAL BANKAI BURST (DETONACIÓN EN T = 1.5S) -->
+  <div id="bankai-flash" class="bankai-flash" aria-hidden="true"></div>
 
-<main>
-<!-- HERO -->
-<section id="hero" aria-label="Presentación principal">
-  <div class="hero-bg" aria-hidden="true">
-    <div class="hero-blob blob-1"></div>
-    <div class="hero-blob blob-2"></div>
+  <!-- 3. SILUETA VECTORIAL ESTILIZADA DE RAMAS DE CEREZO JAPONÉS (Z-INDEX: 1, BOTTOM: 0, RIGHT: 0) -->
+  <svg class="sakura-branch-decor" id="sakuraBranch" viewBox="0 0 500 500" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- Rama principal de cerezo estilo bonsái tradicional / sumi-e -->
+    <path d="M500 480 C440 470 380 440 330 390 C290 350 260 290 220 250 C180 210 140 180 80 160 C70 157 72 150 82 151 C130 158 175 180 215 220 C250 255 275 310 320 350 C370 395 430 425 500 440 Z" />
+    <!-- Rama secundaria superior -->
+    <path d="M260 295 C250 250 240 200 200 150 C170 112 120 85 60 70 C52 68 55 62 64 63 C115 72 165 95 195 130 C230 170 240 215 250 265 Z" />
+    <!-- Rama lateral hacia la izquierda -->
+    <path d="M330 360 C290 320 230 300 160 305 C130 307 100 315 70 325 C62 328 60 320 68 317 C98 305 130 297 162 295 C228 290 282 308 322 345 Z" />
+    <!-- Rama fina superior derecha -->
+    <path d="M225 185 C240 150 270 120 310 100 C340 85 375 75 410 70 C418 69 416 63 408 64 C372 68 335 78 304 93 C262 114 230 144 216 180 Z" />
+    <path d="M185 130 C175 95 150 70 120 50 C112 45 106 52 114 56 C140 72 162 94 172 125 Z" />
+    <path d="M140 178 C120 150 90 135 60 130 C52 129 52 123 60 124 C88 128 116 142 134 168 Z" />
+
+    <!-- Flores de cerezo tradicionales estilizadas (5 pétalos cada una) -->
+    <!-- Flor 1 en extremo rama superior -->
+    <g transform="translate(60, 68) scale(0.7)">
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" />
+      <path d="M17 -5 C25 -9 31 -3 27 5 C23 11 14 11 0 0 C14 11 23 11 27 5 Z" transform="rotate(72)" />
+      <path d="M17 -5 C25 -9 31 -3 27 5 C23 11 14 11 0 0 C14 11 23 11 27 5 Z" transform="rotate(144)" />
+      <path d="M17 -5 C25 -9 31 -3 27 5 C23 11 14 11 0 0 C14 11 23 11 27 5 Z" transform="rotate(216)" />
+      <path d="M17 -5 C25 -9 31 -3 27 5 C23 11 14 11 0 0 C14 11 23 11 27 5 Z" transform="rotate(288)" />
+      <circle cx="0" cy="0" r="3.5" opacity="0.6" />
+    </g>
+
+    <!-- Flor 2 en rama alta izquierda -->
+    <g transform="translate(118, 48) scale(0.65)">
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(72)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(144)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(216)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(288)" />
+      <circle cx="0" cy="0" r="3" opacity="0.6" />
+    </g>
+
+    <!-- Flor 3 en rama lateral media -->
+    <g transform="translate(75, 155) scale(0.75)">
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(72)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(144)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(216)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(288)" />
+      <circle cx="0" cy="0" r="3.5" opacity="0.6" />
+    </g>
+
+    <!-- Flor 4 en rama derecha -->
+    <g transform="translate(410, 68) scale(0.8)">
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(72)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(144)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(216)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(288)" />
+      <circle cx="0" cy="0" r="4" opacity="0.6" />
+    </g>
+
+    <!-- Flor 5 en rama baja izquierda -->
+    <g transform="translate(68, 320) scale(0.65)">
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(72)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(144)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(216)" />
+      <path d="M0 -18 C4 -26 12 -26 14 -18 C14 -10 6 -4 0 0 C-6 -4 -14 -10 -14 -18 C-12 -26 -4 -26 0 -18 Z" transform="rotate(288)" />
+      <circle cx="0" cy="0" r="3" opacity="0.6" />
+    </g>
+
+    <!-- Pétalos individuales sueltos en el viento -->
+    <path d="M150 100 C156 94 164 96 165 102 C166 108 158 114 150 120 C146 114 144 106 150 100 Z" />
+    <path d="M200 80 C206 74 214 76 215 82 C216 88 208 94 200 100 C196 94 194 86 200 80 Z" />
+    <path d="M280 140 C286 134 294 136 295 142 C296 148 288 154 280 160 C276 154 274 146 280 140 Z" />
+    <path d="M100 240 C106 234 114 236 115 242 C116 248 108 254 100 260 C96 254 94 246 100 240 Z" />
+  </svg>
+
+  <!-- NOTIFICACIÓN TOAST (DESCARGA DE CV) -->
+  <div id="downloadToast" class="download-toast" role="status" aria-live="polite">
+    <span class="toast-icon">⚡</span>
+    <div class="toast-content">
+      <strong class="toast-title">¡CV descargado!</strong>
+      <span class="toast-msg">Daniel_Jaimes_CV.pdf (Listo para revisión)</span>
+    </div>
   </div>
-  <div class="hero-grid">
-    <div class="hero-content">
-      <div class="hero-eyebrow">Buscando primera práctica</div>
-      <h1 class="hero-title">
-        Hola, soy<br />
-        <span class="accent">Daniel Jaimes</span><br />
-        Frontend Dev
-      </h1>
-      <p class="hero-subtitle">
-        Estudiante de desarrollo web con pasión por construir interfaces limpias y funcionales.
-        De Bucaramanga para el mundo 🇨🇴 — siempre aprendiendo, siempre creando.
-      </p>
-      <div class="hero-actions">
-        <a href="#projects" class="btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          Ver proyectos
-        </a>
-        <a href="https://github.com/DanielGamboa-10" target="_blank" rel="noopener noreferrer" class="btn-outline">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          GitHub
-        </a>
+
+  <!-- BOTÓN FLOTANTE PARA CAMBIAR TEMA -->
+  <div class="floating-theme-dock" aria-label="Selector de tema">
+    <button id="themeToggleDock" class="theme-dock-btn" title="Alternar Modo Claro / Modo Oscuro" aria-label="Alternar tema de color">
+      <span class="theme-icon sun-icon" aria-hidden="true">☀️</span>
+      <span class="theme-icon moon-icon" aria-hidden="true">🌙</span>
+      <span class="theme-label">Tema</span>
+    </button>
+  </div>
+
+  <!-- 4. CONTENIDO PRINCIPAL PROTEGIDO (Z-INDEX: 10, SECCIONES TRANSPARENTES, FADE-IN EN T = 4.0S) -->
+  <main id="portfolio-content">
+
+    <!-- NAV -->
+    <nav role="navigation" aria-label="Navegación principal">
+      <a href="#hero" class="nav-logo">daniel<span>.dev</span></a>
+      
+      <ul class="nav-links" role="list">
+        <li><a href="#about">Sobre mí</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Proyectos</a></li>
+        <li class="nav-cv-dropdown-wrap">
+          <button class="nav-cv-btn" id="navCvBtn" aria-expanded="false" title="Descargar CV en Español o Inglés">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar CV ▾
+          </button>
+          <div class="cv-dropdown-menu" id="cvDropdownMenu">
+            <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="cv-dropdown-item btn-download-trigger" data-lang="es">
+              <span class="flag">🇪🇸</span>
+              <div>
+                <strong>Español (PDF)</strong>
+                <small>Versión original en español</small>
+              </div>
+            </a>
+            <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="cv-dropdown-item btn-download-trigger" data-lang="en">
+              <span class="flag">🇺🇸</span>
+              <div>
+                <strong>English (PDF)</strong>
+                <small>English translation version</small>
+              </div>
+            </a>
+            <div class="cv-dropdown-divider"></div>
+            <div class="cv-dropdown-sub">Descargar como Imagen (PNG):</div>
+            <div class="cv-png-row">
+              <a href="assets/cv_daniel_jaimes_es.png" download="cv_daniel_jaimes_es.png" class="cv-png-link btn-download-trigger" data-lang="es">🇪🇸 PNG</a>
+              <a href="assets/cv_daniel_jaimes_en.png" download="cv_daniel_jaimes_en.png" class="cv-png-link btn-download-trigger" data-lang="en">🇺🇸 PNG</a>
+            </div>
+          </div>
+        </li>
+        <li><a href="#contact" class="nav-cta">Contacto</a></li>
+        <li>
+          <button id="themeToggleNav" class="theme-nav-btn" title="Alternar tema" aria-label="Alternar tema">
+            <span class="theme-icon sun-icon" aria-hidden="true">☀️</span>
+            <span class="theme-icon moon-icon" aria-hidden="true">🌙</span>
+          </button>
+        </li>
+      </ul>
+
+      <button class="hamburger" aria-label="Abrir menú" aria-expanded="false" id="hamburgerBtn">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Menú móvil">
+      <a href="#about" class="mobile-link">Sobre mí</a>
+      <a href="#skills" class="mobile-link">Skills</a>
+      <a href="#projects" class="mobile-link">Proyectos</a>
+      <div class="mobile-cv-group" style="padding: 0.35rem 0; display:flex; flex-direction:column; gap:0.4rem;">
+        <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="mobile-link mobile-cv-link btn-download-trigger" data-lang="es">📄 🇪🇸 Descargar CV (Español)</a>
+        <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="mobile-link mobile-cv-link btn-download-trigger" data-lang="en">📄 🇺🇸 Download CV (English)</a>
       </div>
+      <a href="#contact" class="mobile-link mobile-cta">Contacto</a>
+      <button id="themeToggleMobile" class="mobile-theme-btn" aria-label="Alternar tema">
+        <span class="theme-icon sun-icon" aria-hidden="true">☀️</span>
+        <span class="theme-icon moon-icon" aria-hidden="true">🌙</span>
+        <span>Cambiar Modo Claro / Oscuro</span>
+      </button>
     </div>
 
-    <div class="terminal" aria-label="Terminal con stack tecnológico" role="img">
-      <div class="terminal-bar" aria-hidden="true">
-        <div class="dot dot-r"></div>
-        <div class="dot dot-y"></div>
-        <div class="dot dot-g"></div>
-        <span class="terminal-title">~/daniel-jaimes — zsh</span>
+    <!-- HERO -->
+    <section id="hero" aria-label="Presentación principal">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="hero-blob blob-1"></div>
+        <div class="hero-blob blob-2"></div>
       </div>
-      <div class="terminal-body" id="terminalBody" aria-live="polite"></div>
-    </div>
-  </div>
-</section>
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-eyebrow">Buscando primera práctica</div>
+          <h1 class="hero-title">
+            Hola, soy<br />
+            <span class="accent">Daniel Gamboa</span><br />
+            Frontend Dev
+          </h1>
+          <p class="hero-subtitle">
+            Estudiante de desarrollo web con pasión por construir interfaces limpias y funcionales.
+            De Bucaramanga para el mundo 🇨🇴 — siempre aprendiendo, siempre creando.
+          </p>
+          <div class="hero-actions">
+            <a href="#projects" class="btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              Ver proyectos
+            </a>
+            <div class="cv-download-group">
+              <button type="button" class="btn-primary btn-cv-hero" id="openCvModalBtn" aria-label="Abrir opciones de descarga de CV">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Descargar CV
+                <span class="cv-badge-lang">ES / EN</span>
+              </button>
+              <div class="cv-quick-links">
+                <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="btn-lang-quick btn-download-trigger" data-lang="es" title="Descargar CV en Español (PDF)">🇪🇸 ES</a>
+                <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="btn-lang-quick btn-download-trigger" data-lang="en" title="Download CV in English (PDF)">🇺🇸 EN</a>
+              </div>
+            </div>
+            <a href="https://github.com/DanielGamboa-10" target="_blank" rel="noopener noreferrer" class="btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
 
-<!-- ABOUT -->
-<section id="about" aria-labelledby="about-heading">
-  <div class="section-inner">
-    <div class="about-grid">
-      <div class="avatar-wrap reveal">
-        <div class="avatar-frame" role="img" aria-label="Foto de perfil de Daniel"><img src="image.png" alt="Daniel Eduardo Jaimes Gamboa"></div>
-        <div class="avatar-badge">En formación 🚀</div>
+        <div class="terminal" aria-label="Terminal con stack tecnológico" role="img">
+          <div class="terminal-bar" aria-hidden="true">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span class="terminal-title">~/daniel-jaimes — zsh</span>
+          </div>
+          <div class="terminal-body" id="terminalBody" aria-live="polite"></div>
+        </div>
       </div>
-      <div class="about-text reveal">
-        <p class="section-eyebrow">// sobre_mi.md</p>
-        <h2 class="section-title" id="about-heading">Daniel Eduardo Jaimes Gamboa</h2>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" aria-labelledby="about-heading">
+      <div class="section-inner">
+        <div class="about-grid">
+          <div class="avatar-wrap reveal">
+            <div class="avatar-frame" role="img" aria-label="Foto de perfil de Daniel Gamboa">
+              <img src="image.png" alt="Daniel Eduardo Jaimes Gamboa" id="userAvatarImg" />
+            </div>
+            <div class="avatar-badge">En formación 🚀</div>
+          </div>
+          <div class="about-text reveal">
+            <p class="section-eyebrow">// sobre_mi.md</p>
+            <h2 class="section-title" id="about-heading">Daniel Eduardo Jaimes Gamboa</h2>
+            <div class="divider" aria-hidden="true"></div>
+            <p>
+              Soy estudiante de desarrollo de software con menos de un año en el mundo del código, pero con una curva de aprendizaje que no para.
+              Me estoy definiendo hacia el <strong>Frontend</strong>, aunque no le huyo ni al backend ni a los datos.
+            </p>
+            <p>
+              He trabajado en proyectos que van desde <strong>sistemas de transporte con IA</strong> hasta <strong>bots de delivery automatizados con n8n</strong>.
+              Cada proyecto me enseña algo nuevo y me convence más de que esto es lo mío.
+            </p>
+            <p>
+              Soy de <strong>Bucaramanga, Colombia</strong>, busco mi primera práctica y estoy listo para aportar, aprender y crecer junto a un equipo que construya cosas que importen.
+            </p>
+            <ul class="tag-list" role="list" aria-label="Tecnologías">
+              <li class="tag">HTML & CSS</li>
+              <li class="tag">JavaScript</li>
+              <li class="tag">Python</li>
+              <li class="tag">Node.js</li>
+              <li class="tag">SQL</li>
+              <li class="tag">Git & GitHub</li>
+              <li class="tag">n8n</li>
+              <li class="tag">FastAPI</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" aria-labelledby="skills-heading">
+      <div class="section-inner">
+        <p class="section-eyebrow">// stack.json</p>
+        <h2 class="section-title" id="skills-heading">Lo que sé usar</h2>
         <div class="divider" aria-hidden="true"></div>
-        <p>
-          Soy estudiante de desarrollo de software con menos de un año en el mundo del código, pero con una curva de aprendizaje que no para.
-          Me estoy definiendo hacia el <strong>Frontend</strong>, aunque no le huyo ni al backend ni a los datos.
+        <p class="section-desc" style="margin-bottom:2.5rem">
+          Mis herramientas actuales. Nivel honesto, sin inflar números.
         </p>
-        <p>
-          He trabajado en proyectos que van desde <strong>sistemas de transporte con IA</strong> hasta <strong>bots de delivery automatizados con n8n</strong>.
-          Cada proyecto me enseña algo nuevo y me convence más de que esto es lo mío.
+        <div class="skills-grid">
+          <article class="skill-card reveal" aria-label="Frontend">
+            <div class="skill-icon" aria-hidden="true">🎨</div>
+            <h3 class="skill-category">Frontend</h3>
+            <div class="skill-item">
+              <span class="skill-name">HTML & CSS</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100" aria-label="HTML y CSS: 88%">
+                <div class="skill-bar" data-w="88"></div>
+              </div>
+              <span class="skill-pct">88%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">JavaScript</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="JavaScript: 60%">
+                <div class="skill-bar" data-w="60"></div>
+              </div>
+              <span class="skill-pct">60%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Diseño Responsive</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" aria-label="Diseño responsive: 70%">
+                <div class="skill-bar" data-w="70"></div>
+              </div>
+              <span class="skill-pct">70%</span>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" aria-label="Backend y datos">
+            <div class="skill-icon" aria-hidden="true">⚙️</div>
+            <h3 class="skill-category">Backend & Datos</h3>
+            <div class="skill-item">
+              <span class="skill-name">Python</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100" aria-label="Python: 82%">
+                <div class="skill-bar" data-w="82"></div>
+              </div>
+              <span class="skill-pct">82%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Node.js</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" aria-label="Node.js: 55%">
+                <div class="skill-bar" data-w="55"></div>
+              </div>
+              <span class="skill-pct">55%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">SQL</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="SQL: 60%">
+                <div class="skill-bar" data-w="60"></div>
+              </div>
+              <span class="skill-pct">60%</span>
+            </div>
+          </article>
+
+          <article class="skill-card reveal" aria-label="Herramientas">
+            <div class="skill-icon" aria-hidden="true">🛠️</div>
+            <h3 class="skill-category">Herramientas</h3>
+            <div class="skill-item">
+              <span class="skill-name">Git & GitHub</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Git y GitHub: 75%">
+                <div class="skill-bar" data-w="75"></div>
+              </div>
+              <span class="skill-pct">75%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">n8n (Automatización)</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="n8n: 65%">
+                <div class="skill-bar" data-w="65"></div>
+              </div>
+              <span class="skill-pct">65%</span>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">FastAPI</span>
+              <div class="skill-bar-wrap" role="progressbar" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" aria-label="FastAPI: 58%">
+                <div class="skill-bar" data-w="58"></div>
+              </div>
+              <span class="skill-pct">58%</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" aria-labelledby="projects-heading">
+      <div class="section-inner">
+        <p class="section-eyebrow">// projects.list</p>
+        <h2 class="section-title" id="projects-heading">Lo que he construido</h2>
+        <div class="divider" aria-hidden="true"></div>
+        <p class="section-desc" style="margin-bottom:2.5rem">
+          Proyectos reales del proceso de aprendizaje. Cada uno representa un reto nuevo.
         </p>
-        <p>
-          Soy de <strong>Bucaramanga, Colombia</strong>, busco mi primera práctica y estoy listo para aportar, aprender y crecer junto a un equipo que construya cosas que importen.
-        </p>
-        <ul class="tag-list" role="list" aria-label="Tecnologías">
-          <li class="tag">HTML & CSS</li>
-          <li class="tag">JavaScript</li>
-          <li class="tag">Python</li>
-          <li class="tag">Node.js</li>
-          <li class="tag">SQL</li>
-          <li class="tag">Git & GitHub</li>
-          <li class="tag">n8n</li>
-          <li class="tag">FastAPI</li>
-        </ul>
+
+        <div class="projects-grid">
+          <!-- Featured: Metrolínea Live -->
+          <article class="project-card featured reveal" aria-label="Proyecto destacado: Metrolínea Live">
+            <div class="project-img" aria-hidden="true">
+              <!-- Espacio para foto del proyecto (listo para agregar tu imagen) -->
+              <div class="project-img-placeholder">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>Foto del proyecto</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <h3 class="project-title">Metrolínea Live</h3>
+              <p class="project-desc">
+                Sistema inteligente de monitoreo y geolocalización en tiempo real para el transporte público de Bucaramanga.
+                Desarrollado para la <strong style="color:var(--text-color)">Hackathon Metrolínea</strong>: seguimiento de buses, cálculo de ETA
+                y detección de incidentes con visión artificial (YOLOv8).
+              </p>
+              <ul class="project-stack" role="list" aria-label="Stack">
+                <li class="project-tag">Python</li>
+                <li class="project-tag">FastAPI</li>
+                <li class="project-tag">YOLOv8</li>
+                <li class="project-tag">JavaScript</li>
+                <li class="project-tag">Leaflet.js</li>
+                <li class="project-tag">HTML/CSS</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/DanielGamboa-10/Proyecto_Metrolinea_Python" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  Ver en GitHub
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- DeliveryBot -->
+          <article class="project-card reveal" aria-label="Proyecto: DeliveryBot con n8n">
+            <div class="project-img" aria-hidden="true">
+              <!-- Espacio para foto del proyecto -->
+              <div class="project-img-placeholder">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>Foto del proyecto</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <h3 class="project-title">DeliveryBot</h3>
+              <p class="project-desc">
+                Bot de delivery automatizado construido con n8n. Gestiona pedidos, notificaciones
+                y flujos de trabajo sin necesidad de código tradicional.
+              </p>
+              <ul class="project-stack" role="list">
+                <li class="project-tag">n8n</li>
+                <li class="project-tag">Automatización</li>
+                <li class="project-tag">Workflows</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/DanielGamboa-10/Proyecto_DeliveryBot_GamboaDaniel" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  Ver en GitHub
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Sistema Préstamos -->
+          <article class="project-card reveal" aria-label="Proyecto: Sistema de Gestión de Préstamos">
+            <div class="project-img" aria-hidden="true">
+              <!-- Espacio para foto del proyecto -->
+              <div class="project-img-placeholder">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>Foto del proyecto</span>
+              </div>
+            </div>
+            <div class="project-body">
+              <h3 class="project-title">Sistema de Gestión de Préstamos</h3>
+              <p class="project-desc">
+                Sistema de préstamo y gestión de herramientas para una comunidad vecinal.
+                Manejo de usuarios, inventario, logs y reportes de usuarios activos.
+              </p>
+              <ul class="project-stack" role="list">
+                <li class="project-tag">Python</li>
+                <li class="project-tag">JSON</li>
+                <li class="project-tag">POO</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/DanielGamboa-10/PROYECTOPYTHON" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                  Ver en GitHub
+                </a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" aria-labelledby="contact-heading">
+      <div class="section-inner">
+        <div class="contact-wrap reveal">
+          <p class="section-eyebrow" style="text-align:center">// contacto.sh</p>
+          <h2 class="contact-title" id="contact-heading">
+            ¿Le damos a esto<br /><span>juntos?</span>
+          </h2>
+          <p class="contact-desc">
+            Estoy buscando mi primera práctica y listo para aportar desde el día uno.
+            Si tienes un proyecto, un equipo o simplemente quieres conectar — escríbeme.
+          </p>
+          <a href="mailto:danieljgamboa55@gmail.com" class="email-box" aria-label="Enviar correo a Daniel">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            danieljgamboa55@gmail.com
+          </a>
+          <div class="contact-links" role="list">
+            <a href="https://github.com/DanielGamboa-10" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub de Daniel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              GitHub
+            </a>
+            <button type="button" class="social-btn" id="contactCvBtn" aria-label="Descargar CV de Daniel en Español o Inglés">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Descargar CV (ES / EN)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer role="contentinfo">
+      <a href="#hero" class="footer-logo">daniel<span>.dev</span></a>
+      <span class="footer-copy">© 2026 Daniel Gamboa (Daniel Eduardo Jaimes Gamboa) — Bucaramanga, Colombia</span>
+      <nav class="footer-links" aria-label="Links del footer">
+        <a href="#about">Sobre mí</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Proyectos</a>
+      </nav>
+    </footer>
+
+  </main>
+
+  <!-- MODAL DE DESCARGA DE CV (ESPAÑOL E INGLÉS) -->
+  <div id="cvModal" class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="cvModalTitle" hidden>
+    <div class="cv-modal-backdrop" id="cvModalBackdrop"></div>
+    <div class="cv-modal-dialog">
+      <div class="cv-modal-header">
+        <div>
+          <h3 id="cvModalTitle" class="cv-modal-title">Descargar Curriculum Vitae</h3>
+          <p class="cv-modal-subtitle">Selecciona tu idioma preferido / Select your preferred language</p>
+        </div>
+        <button class="cv-modal-close" id="cvModalClose" aria-label="Cerrar ventana">✕</button>
+      </div>
+      <div class="cv-modal-grid">
+        <!-- Opción 1: Español -->
+        <div class="cv-card-option">
+          <div class="cv-card-thumb">
+            <img src="assets/cv_daniel_jaimes_es.png" alt="Miniatura CV Español - Daniel Jaimes Gamboa" />
+            <span class="cv-thumb-badge">🇪🇸 Español</span>
+          </div>
+          <div class="cv-card-info">
+            <h4>Versión en Español</h4>
+            <p>Desarrollador Junior — Perfil técnico, formación y proyectos en español.</p>
+            <div class="cv-card-actions">
+              <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="btn-cv-download btn-download-trigger" data-lang="es">
+                📄 Descargar PDF
+              </a>
+              <a href="assets/cv_daniel_jaimes_es.png" download="cv_daniel_jaimes_es.png" class="btn-cv-download-secondary btn-download-trigger" data-lang="es">
+                🖼️ Descargar Imagen
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opción 2: English -->
+        <div class="cv-card-option">
+          <div class="cv-card-thumb">
+            <img src="assets/cv_daniel_jaimes_en.png" alt="English CV Thumbnail - Daniel Jaimes Gamboa" />
+            <span class="cv-thumb-badge">🇺🇸 English</span>
+          </div>
+          <div class="cv-card-info">
+            <h4>English Version</h4>
+            <p>Junior Developer — Full technical profile, training & projects in English.</p>
+            <div class="cv-card-actions">
+              <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="btn-cv-download btn-download-trigger" data-lang="en">
+                📄 Download PDF
+              </a>
+              <a href="assets/cv_daniel_jaimes_en.png" download="cv_daniel_jaimes_en.png" class="btn-cv-download-secondary btn-download-trigger" data-lang="en">
+                🖼️ Download Image
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- SKILLS -->
-<section id="skills" aria-labelledby="skills-heading">
-  <div class="section-inner">
-    <p class="section-eyebrow">// stack.json</p>
-    <h2 class="section-title" id="skills-heading">Lo que sé usar</h2>
-    <div class="divider" aria-hidden="true"></div>
-    <p class="section-desc" style="margin-bottom:2.5rem">
-      Mis herramientas actuales. Nivel honesto, sin inflar números.
-    </p>
-    <div class="skills-grid">
-      <article class="skill-card reveal" aria-label="Frontend">
-        <div class="skill-icon" aria-hidden="true">🎨</div>
-        <h3 class="skill-category">Frontend</h3>
-        <div class="skill-item">
-          <span class="skill-name">HTML & CSS</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100" aria-label="HTML y CSS: 88%">
-            <div class="skill-bar" data-w="88"></div>
-          </div>
-          <span class="skill-pct">88%</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">JavaScript</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="JavaScript: 60%">
-            <div class="skill-bar" data-w="60"></div>
-          </div>
-          <span class="skill-pct">60%</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">Diseño Responsive</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" aria-label="Diseño responsive: 70%">
-            <div class="skill-bar" data-w="70"></div>
-          </div>
-          <span class="skill-pct">70%</span>
-        </div>
-      </article>
-
-      <article class="skill-card reveal" aria-label="Backend y datos">
-        <div class="skill-icon" aria-hidden="true">⚙️</div>
-        <h3 class="skill-category">Backend & Datos</h3>
-        <div class="skill-item">
-          <span class="skill-name">Python</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100" aria-label="Python: 82%">
-            <div class="skill-bar" data-w="82"></div>
-          </div>
-          <span class="skill-pct">82%</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">Node.js</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" aria-label="Node.js: 55%">
-            <div class="skill-bar" data-w="55"></div>
-          </div>
-          <span class="skill-pct">55%</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">SQL</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="SQL: 60%">
-            <div class="skill-bar" data-w="60"></div>
-          </div>
-          <span class="skill-pct">60%</span>
-        </div>
-      </article>
-
-      <article class="skill-card reveal" aria-label="Herramientas">
-        <div class="skill-icon" aria-hidden="true">🛠️</div>
-        <h3 class="skill-category">Herramientas</h3>
-        <div class="skill-item">
-          <span class="skill-name">Git & GitHub</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Git y GitHub: 75%">
-            <div class="skill-bar" data-w="75"></div>
-          </div>
-          <span class="skill-pct">75%</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">n8n (Automatización)</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="n8n: 65%">
-            <div class="skill-bar" data-w="65"></div>
-          </div>
-          <span class="skill-pct">65%</span>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name">FastAPI</span>
-          <div class="skill-bar-wrap" role="progressbar" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" aria-label="FastAPI: 58%">
-            <div class="skill-bar" data-w="58"></div>
-          </div>
-          <span class="skill-pct">58%</span>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects" aria-labelledby="projects-heading">
-  <div class="section-inner">
-    <p class="section-eyebrow">// projects.list</p>
-    <h2 class="section-title" id="projects-heading">Lo que he construido</h2>
-    <div class="divider" aria-hidden="true"></div>
-    <p class="section-desc" style="margin-bottom:2.5rem">
-      Proyectos reales del proceso de aprendizaje. Cada uno representa un reto nuevo.
-    </p>
-
-    <div class="projects-grid">
-      <!-- Featured -->
-      <article class="project-card featured reveal" aria-label="Proyecto destacado: Metrolínea Live">
-        <div class="project-img" style="background:linear-gradient(135deg,#0f3460,#1a1a2e)" aria-hidden="true">🚍</div>
-        <div class="project-body">
-          <h3 class="project-title">Metrolínea Live</h3>
-          <p class="project-desc">
-            Sistema inteligente de monitoreo y geolocalización en tiempo real para el transporte público de Bucaramanga.
-            Desarrollado para la <strong style="color:var(--text)">Hackathon Metrolínea</strong>: seguimiento de buses, cálculo de ETA
-            y detección de incidentes con visión artificial (YOLOv8).
-          </p>
-          <ul class="project-stack" role="list" aria-label="Stack">
-            <li class="project-tag">Python</li>
-            <li class="project-tag">FastAPI</li>
-            <li class="project-tag">YOLOv8</li>
-            <li class="project-tag">JavaScript</li>
-            <li class="project-tag">Leaflet.js</li>
-            <li class="project-tag">HTML/CSS</li>
-          </ul>
-          <div class="project-links">
-            <a href="https://github.com/DanielGamboa-10/Proyecto_Metrolinea_Python" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              Ver en GitHub
-            </a>
-          </div>
-        </div>
-      </article>
-
-      <!-- DeliveryBot -->
-      <article class="project-card reveal" aria-label="Proyecto: DeliveryBot con n8n">
-        <div class="project-img" style="background:linear-gradient(135deg,#1a0533,#2d1b69)" aria-hidden="true">🤖</div>
-        <div class="project-body">
-          <h3 class="project-title">DeliveryBot</h3>
-          <p class="project-desc">
-            Bot de delivery automatizado construido con n8n. Gestiona pedidos, notificaciones
-            y flujos de trabajo sin necesidad de código tradicional.
-          </p>
-          <ul class="project-stack" role="list">
-            <li class="project-tag">n8n</li>
-            <li class="project-tag">Automatización</li>
-            <li class="project-tag">Workflows</li>
-          </ul>
-          <div class="project-links">
-            <a href="https://github.com/DanielGamboa-10/Proyecto_DeliveryBot_GamboaDaniel" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              Ver en GitHub
-            </a>
-          </div>
-        </div>
-      </article>
-
-      <!-- Sistema Préstamos -->
-      <article class="project-card reveal" aria-label="Proyecto: Sistema de Gestión de Préstamos">
-        <div class="project-img" style="background:linear-gradient(135deg,#0a2a1a,#0f4a30)" aria-hidden="true">🏘️</div>
-        <div class="project-body">
-          <h3 class="project-title">Sistema de Gestión de Préstamos</h3>
-          <p class="project-desc">
-            Sistema de préstamo y gestión de herramientas para una comunidad vecinal.
-            Manejo de usuarios, inventario, logs y reportes de usuarios activos.
-          </p>
-          <ul class="project-stack" role="list">
-            <li class="project-tag">Python</li>
-            <li class="project-tag">JSON</li>
-            <li class="project-tag">POO</li>
-          </ul>
-          <div class="project-links">
-            <a href="https://github.com/DanielGamboa-10/PROYECTOPYTHON" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              Ver en GitHub
-            </a>
-          </div>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" aria-labelledby="contact-heading">
-  <div class="section-inner">
-    <div class="contact-wrap reveal">
-      <p class="section-eyebrow" style="text-align:center">// contacto.sh</p>
-      <h2 class="contact-title" id="contact-heading">
-        ¿Le damos a esto<br /><span>juntos?</span>
-      </h2>
-      <p class="contact-desc">
-        Estoy buscando mi primera práctica y listo para aportar desde el día uno.
-        Si tienes un proyecto, un equipo o simplemente quieres conectar — escríbeme.
-      </p>
-      <a href="mailto:danieljgamboa55@gmail.com" class="email-box" aria-label="Enviar correo a Daniel">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        danieljgamboa55@gmail.com
-      </a>
-      <div class="contact-links" role="list">
-        <a href="https://github.com/DanielGamboa-10" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub de Daniel">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          GitHub
-        </a>
-        <a href="#" class="social-btn" aria-label="Descargar CV de Daniel">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Descargar CV
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-</main>
-
-<!-- FOOTER -->
-<footer role="contentinfo">
-  <a href="#hero" class="footer-logo">daniel<span>.dev</span></a>
-  <nav class="footer-links" aria-label="Links del footer">
-    <a href="#about">Sobre mí</a>
-    <a href="#skills">Skills</a>
-    <a href="#projects">Proyectos</a>
-  </nav>
-</footer>
-
-<script src="main.js"></script>
+  <!-- Script principal del portafolio (cargado con DOMContentLoaded) -->
+  <script src="main.js"></script>
 </body>
 </html>
-

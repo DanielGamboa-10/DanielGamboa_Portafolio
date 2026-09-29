@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Senbonzakura Kageyoshi — WebGL Particle Vortex</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── BASE & RESET ── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Space Grotesk', sans-serif;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── THEME PALETTES ── */
+    :root[data-theme="light"] {
+      --bg: #F8F3FA;
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(244, 63, 94, 0.25);
+      --text: #1E122A;
+      --text-muted: #7E6B8E;
+      --accent: #E11D48;
+      --accent-glow: rgba(244, 63, 94, 0.35);
+      --hud-shadow: 0 10px 30px rgba(225, 29, 72, 0.12);
+    }
+    :root[data-theme="dark"] {
+      --bg: #070512;
+      --card-bg: rgba(14, 10, 28, 0.8);
+      --card-border: rgba(168, 85, 247, 0.3);
+      --text: #F5F3FF;
+      --text-muted: #9D8FB3;
+      --accent: #A855F7;
+      --accent-glow: rgba(168, 85, 247, 0.45);
+      --hud-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    body {
+      background-color: var(--bg);
+      transition: background-color 0.8s ease;
+    }
+
+    /* ── THREE.JS CANVAS CONTAINER ── */
+    #webgl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+    }
+
+    /* ── FLOATING ANIME HUD OVERLAY ── */
+    .overlay-hud {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2.2rem 3rem;
+    }
+
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .hud-title-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 1.1rem 1.6rem;
+      border-radius: 16px;
+      box-shadow: var(--hud-shadow);
+      max-width: 440px;
+      pointer-events: auto;
+      transition: all 0.4s ease;
+    }
+    .hud-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .hud-tag::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 1.8s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.6); opacity: 0.4; }
+    }
+    .hud-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.15;
+    }
+    .hud-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* ── CONTROLS PANEL ── */
+    .hud-controls {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 8px 12px;
+      border-radius: 999px;
+      box-shadow: var(--hud-shadow);
+      transition: all 0.4s ease;
+    }
+
+    .btn-action {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+    .btn-action:hover {
+      background: var(--accent-glow);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .btn-surge {
+      background: var(--accent);
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn-surge:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+
+    .hud-stats {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-left: 1px solid var(--card-border);
+    }
+
+    /* ── FOOTER HINT ── */
+    .hud-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .hud-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      background: var(--card-bg);
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 768px) {
+      .overlay-hud { padding: 1.5rem; }
+      .hud-header { flex-direction: column; gap: 14px; }
+      .hud-controls { width: 100%; justify-content: space-between; }
+    }
+  </style>
+
+  <!-- THREE.JS IMPORT MAP -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- WebGL Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Interactive HUD Overlay -->
+  <div class="overlay-hud">
+    <header class="hud-header">
+      <div class="hud-title-box">
+        <div class="hud-tag">Bankai // 卍解 · 千本桜景厳</div>
+        <h1 class="hud-title">Senbonzakura Kageyoshi</h1>
+        <p class="hud-subtitle">GPU Vortex Particle Engine · 35,000 Translucent Petals</p>
+      </div>
+
+      <nav class="hud-controls" aria-label="Controles de Simulación">
+        <button id="themeToggleBtn" class="btn-action" title="Alternar modo Claro / Oscuro">
+          <span id="themeIcon">☀️</span>
+          <span id="themeLabel">Modo Claro</span>
+        </button>
+
+        <button id="surgeBtn" class="btn-action btn-surge" title="Acelera el vórtice e intensifica el Bloom">
+          <span>⚡</span>
+          <span>Bankai Surge</span>
+        </button>
+
+        <div class="hud-stats">
+          <span>PARTÍCULAS: <strong>35,000</strong></span>
+        </div>
+      </nav>
+    </header>
+
+    <footer class="hud-footer">
+      <div class="hud-hint">
+        <span>✦ Mueve el ratón para influir en la curvatura de la espiral y la cámara</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODULAR SHADER & THREE.JS ENGINE SCRIPT -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    // ──────────────────────────────────────────────────────────
+    // 1. CONFIGURATION & STATE
+    // ──────────────────────────────────────────────────────────
+    const CONFIG = {
+      particleCount: 35000,
+      vortexHeight: 45.0,
+      vortexMaxRadius: 18.0,
+      vortexCoreRadius: 2.2,
+      baseSpeed: 1.0,
+      surgeMultiplier: 1.0,
+      currentTheme: 'light', // 'light' | 'dark'
+      cameraZ: 26.0,
+    };
+
+    // Color definitions for Themes
+    const THEMES = {
+      light: {
+        bgColor: new THREE.Color(0xF8F3FA),
+        ambientColor: new THREE.Color(0xFFE4E9),
+        petalBase: new THREE.Color(0xE11D48),    // Crimson Rose
+        petalTip: new THREE.Color(0xFF90B8),     // Bright Sakura Pink
+        petalHighlight: new THREE.Color(0xFFE4ED),
+        bloomStrength: 1.45,
+        bloomRadius: 0.65,
+        bloomThreshold: 0.18,
+        treeVisible: true,
+        treeOpacity: 0.85
+      },
+      dark: {
+        bgColor: new THREE.Color(0x060411),      // Deep Obsidian Indigo
+        ambientColor: new THREE.Color(0x1B1038),
+        petalBase: new THREE.Color(0x7C3AED),    // Deep Electric Violet
+        petalTip: new THREE.Color(0xC084FC),     // Radiant Neon Amethyst
+        petalHighlight: new THREE.Color(0xF5D0FE),
+        bloomStrength: 2.35,                    // Higher bloom for dark mode
+        bloomRadius: 0.85,
+        bloomThreshold: 0.12,
+        treeVisible: false,
+        treeOpacity: 0.0
+      }
+    };
+
+    // ──────────────────────────────────────────────────────────
+    // 2. SHADERS (VORTEX GPU SIMULATION)
+    // ──────────────────────────────────────────────────────────
+    const PetalShader = {
+      vertexShader: `
+        uniform float uTime;
+        uniform float uHeightRange;
+        uniform float uCoreRadius;
+        uniform float uMaxRadius;
+        uniform float uSpeedMultiplier;
+        uniform vec2 uMouse;
+
+        attribute vec4 aInstancePos;   // x: radiusMultiplier, y: heightOffset, z: phase, w: scale
+        attribute vec4 aInstanceParam; // x: speed, y: angleOffset, z: tumbleSpeed, w: spiralIntensity
+        attribute vec3 aInstanceSeed;  // random rotation seeds
+
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying float vHeightProgress;
+        varying float vDistanceToCenter;
+        varying float vRandomId;
+
+        // Rodrigues rotation formula around axis
+        vec3 rotateAxis(vec3 v, vec3 axis, float angle) {
+          axis = normalize(axis);
+          float s = sin(angle);
+          float c = cos(angle);
+          float oc = 1.0 - c;
+          return v * c + cross(axis, v) * s + axis * dot(axis, v) * oc;
+        }
+
+        void main() {
+          vUv = uv;
+          vRandomId = aInstanceSeed.x;
+
+          // 1. Anti-gravity vertical flow from bottom to top
+          float globalTime = uTime * aInstanceParam.x * uSpeedMultiplier;
+          float rawY = aInstancePos.y + globalTime;
+          float progress = fract(rawY / uHeightRange);
+          vHeightProgress = progress;
+
+          // Center y in [-uHeightRange/2, uHeightRange/2]
+          float y = (progress - 0.5) * uHeightRange;
+
+          // 2. Gravitational Vortex constriction (hourglass waist effect)
+          // Near the focal center (progress ≈ 0.5), petals tighten violently into a dense core
+          float centerDist = abs(progress - 0.5) * 2.0; // 0 at waist, 1 at edges
+          float waist = pow(centerDist, 0.85);
+          float currentRadius = mix(uCoreRadius, uMaxRadius, waist) * aInstancePos.x;
+
+          // 3. Spiral Angular Velocity (Keplerian physics: faster near core)
+          float angularSpeed = (3.5 / (waist + 0.28)) * aInstanceParam.w;
+          float angle = aInstanceParam.y + uTime * angularSpeed * 0.85 + (progress * 10.0);
+
+          // Meandering river sinusoidal displacement (like Senbonzakura stream)
+          float riverBend = sin(progress * 4.0 + uTime * 0.9) * 2.2;
+          float x = cos(angle) * currentRadius + riverBend;
+          float z = sin(angle) * currentRadius;
+
+          // Subtle mouse gravitation pull
+          x += uMouse.x * (1.0 - waist) * 4.0;
+          z += uMouse.y * (1.0 - waist) * 4.0;
+
+          vDistanceToCenter = length(vec2(x, z));
+
+          // 4. Individual 3D Petal Tumble & Fluttering Motion
+          vec3 transformedPos = position * aInstancePos.w;
+
+          // Tumble rotation axes
+          vec3 tumbleAxis = normalize(vec3(sin(aInstanceSeed.y * 6.28), cos(aInstanceSeed.z * 6.28), sin(aInstanceSeed.x * 6.28)));
+          float tumbleAngle = uTime * aInstanceParam.z * 3.5 + aInstancePos.z;
+          transformedPos = rotateAxis(transformedPos, tumbleAxis, tumbleAngle);
+
+          // Orient petal slightly along flow direction
+          vec3 flowTangential = normalize(vec3(-sin(angle), 0.8, cos(angle)));
+          transformedPos = rotateAxis(transformedPos, flowTangential, 0.4);
+
+          // Final World Position
+          vec3 finalPos = vec3(x, y, z) + transformedPos;
+
+          // Output normal
+          vNormal = normalMatrix * rotateAxis(normal, tumbleAxis, tumbleAngle);
+
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
+        }
+      `,
+
+      fragmentShader: `
+        uniform vec3 uColorBase;
+        uniform vec3 uColorTip;
+        uniform vec3 uColorHighlight;
+        uniform float uBloomIntensity;
+        uniform float uThemeFactor; // 0.0 (light) to 1.0 (dark)
+
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying float vHeightProgress;
+        varying float vDistanceToCenter;
+        varying float vRandomId;
+
+        void main() {
+          // 1. Procedural Petal Silhouette (Natural notched cherry petal)
+          vec2 p = vUv - vec2(0.5, 0.45);
+          float r = length(p);
+          float angle = atan(p.x, p.y);
+          
+          // Petal edge shape modulation
+          float petalShape = 0.42 + 0.08 * cos(angle * 2.0) - 0.04 * cos(angle * 4.0);
+          // Tiny notch at the tip
+          if (vUv.y > 0.78 && abs(vUv.x - 0.5) < 0.12) {
+            petalShape -= 0.08 * (1.0 - abs(vUv.x - 0.5) / 0.12);
+          }
+
+          if (r > petalShape) {
+            discard;
+          }
+
+          // 2. Color Gradient & Translucency
+          float gradientFactor = smoothstep(0.1, 0.85, vUv.y);
+          vec3 petalColor = mix(uColorBase, uColorTip, gradientFactor);
+
+          // Central vein & highlight
+          float vein = 1.0 - smoothstep(0.0, 0.04, abs(vUv.x - 0.5));
+          petalColor = mix(petalColor, uColorHighlight, vein * 0.35);
+
+          // Subtle variation per petal
+          petalColor += (vRandomId - 0.5) * 0.08;
+
+          // 3. Fresnel / Edge Rim Light for Bloom Aura
+          vec3 viewDir = vec3(0.0, 0.0, 1.0);
+          float fresnel = pow(1.0 - abs(dot(normalize(vNormal), viewDir)), 2.2);
+
+          // Bloom amplification near dense core
+          float coreEnergy = smoothstep(10.0, 1.0, vDistanceToCenter);
+          vec3 emissiveGlow = uColorTip * (fresnel * 1.5 + coreEnergy * 0.8) * uBloomIntensity;
+
+          vec3 finalColor = petalColor + emissiveGlow;
+          float alpha = mix(0.85, 0.98, gradientFactor);
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `
+    };
+
+    // ──────────────────────────────────────────────────────────
+    // 3. THREE.JS ENGINE SETUP
+    // ──────────────────────────────────────────────────────────
+    class SenbonzakuraVortex {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.mouse = new THREE.Vector2(0, 0);
+        this.targetMouse = new THREE.Vector2(0, 0);
+        this.surgeActive = false;
+        this.surgeFactor = 1.0;
+
+        this.initScene();
+        this.initPostProcessing();
+        this.createPetalGeometry();
+        this.createInstancedParticles();
+        this.createBackgroundTree();
+        this.addEventListeners();
+        this.applyTheme(CONFIG.currentTheme, true);
+
+        this.clock = new THREE.Clock();
+        this.animate();
+      }
+
+      initScene() {
+        // Scene
+        this.scene = new THREE.Scene();
+        this.scene.fog = new THREE.FogExp2(THEMES.light.bgColor, 0.018);
+
+        // Camera
+        this.camera = new THREE.PerspectiveCamera(52, this.width / this.height, 0.1, 200);
+        this.camera.position.set(0, 2, CONFIG.cameraZ);
+
+        // WebGL Renderer
+        this.renderer = new THREE.WebGLRenderer({
+          canvas: this.canvas,
+          antialias: true,
+          powerPreference: 'high-performance'
+        });
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.15;
+      }
+
+      initPostProcessing() {
+        this.composer = new EffectComposer(this.renderer);
+        const renderPass = new RenderPass(this.scene, this.camera);
+        this.composer.addPass(renderPass);
+
+        // UnrealBloomPass for Senbonzakura energy glow
+        this.bloomPass = new UnrealBloomPass(
+          new THREE.Vector2(this.width, this.height),
+          THEMES.light.bloomStrength,
+          THEMES.light.bloomRadius,
+          THEMES.light.bloomThreshold
+        );
+        this.composer.addPass(this.bloomPass);
+      }
+
+      createPetalGeometry() {
+        // Realistic 3D Curved Petal (Parametric Quad with central curvature)
+        const geom = new THREE.PlaneGeometry(0.55, 0.75, 4, 4);
+        const pos = geom.attributes.position;
+
+        // Add 3D gentle curvature so petals look organic from every angle
+        for (let i = 0; i < pos.count; i++) {
+          const x = pos.getX(i);
+          const y = pos.getY(i);
+          // Cup curve along Y & bend edges inward along X
+          const curveZ = Math.sin((y + 0.375) / 0.75 * Math.PI) * 0.12 - Math.abs(x) * 0.1;
+          pos.setZ(i, curveZ);
+        }
+        geom.computeVertexNormals();
+        this.basePetalGeometry = geom;
+      }
+
+      createInstancedParticles() {
+        const count = CONFIG.particleCount;
+
+        // Custom ShaderMaterial with Uniforms
+        this.petalMaterial = new THREE.ShaderMaterial({
+          vertexShader: PetalShader.vertexShader,
+          fragmentShader: PetalShader.fragmentShader,
+          uniforms: {
+            uTime: { value: 0 },
+            uHeightRange: { value: CONFIG.vortexHeight },
+            uCoreRadius: { value: CONFIG.vortexCoreRadius },
+            uMaxRadius: { value: CONFIG.vortexMaxRadius },
+            uSpeedMultiplier: { value: CONFIG.baseSpeed },
+            uMouse: { value: new THREE.Vector2(0, 0) },
+            uColorBase: { value: THEMES.light.petalBase.clone() },
+            uColorTip: { value: THEMES.light.petalTip.clone() },
+            uColorHighlight: { value: THEMES.light.petalHighlight.clone() },
+            uBloomIntensity: { value: 1.0 },
+            uThemeFactor: { value: 0.0 }
+          },
+          side: THREE.DoubleSide,
+          transparent: true,
+          depthWrite: false,
+          blending: THREE.NormalBlending
+        });
+
+        // InstancedMesh
+        this.instancedMesh = new THREE.InstancedMesh(this.basePetalGeometry, this.petalMaterial, count);
+        this.instancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
+        // Instance Attributes for GPU Simulation
+        const aInstancePos = new Float32Array(count * 4);
+        const aInstanceParam = new Float32Array(count * 4);
+        const aInstanceSeed = new Float32Array(count * 3);
+
+        for (let i = 0; i < count; i++) {
+          const i4 = i * 4;
+          const i3 = i * 3;
+
+          // aInstancePos: [radiusMultiplier, initialY, phase, scale]
+          aInstancePos[i4 + 0] = 0.3 + Math.pow(Math.random(), 0.75) * 1.1; // radial distribution
+          aInstancePos[i4 + 1] = Math.random() * CONFIG.vortexHeight;       // y offset
+          aInstancePos[i4 + 2] = Math.random() * Math.PI * 2;              // phase
+          aInstancePos[i4 + 3] = 0.7 + Math.random() * 0.75;                // scale
+
+          // aInstanceParam: [speed, angleOffset, tumbleSpeed, spiralIntensity]
+          aInstanceParam[i4 + 0] = 0.75 + Math.random() * 0.65;             // speed
+          aInstanceParam[i4 + 1] = Math.random() * Math.PI * 2;             // angle offset
+          aInstanceParam[i4 + 2] = 0.6 + Math.random() * 1.2;              // tumble speed
+          aInstanceParam[i4 + 3] = 0.8 + Math.random() * 0.4;              // spiral intensity
+
+          // aInstanceSeed: [seed1, seed2, seed3]
+          aInstanceSeed[i3 + 0] = Math.random();
+          aInstanceSeed[i3 + 1] = Math.random();
+          aInstanceSeed[i3 + 2] = Math.random();
+        }
+
+        this.instancedMesh.geometry.setAttribute('aInstancePos', new THREE.InstancedBufferAttribute(aInstancePos, 4));
+        this.instancedMesh.geometry.setAttribute('aInstanceParam', new THREE.InstancedBufferAttribute(aInstanceParam, 4));
+        this.instancedMesh.geometry.setAttribute('aInstanceSeed', new THREE.InstancedBufferAttribute(aInstanceSeed, 3));
+
+        this.scene.add(this.instancedMesh);
+      }
+
+      createBackgroundTree() {
+        // Ethereal stylized Cherry Tree Silhouette in the background (visible in Light Mode)
+        this.treeGroup = new THREE.Group();
+        this.treeGroup.position.set(0, -6, -22);
+
+        // Stylized Trunk Geometry
+        const trunkMat = new THREE.MeshBasicMaterial({
+          color: 0x3E2723,
+          transparent: true,
+          opacity: 0.85
+        });
+
+        const trunkGeom = new THREE.CylinderGeometry(0.7, 1.6, 12, 10);
+        const trunk = new THREE.Mesh(trunkGeom, trunkMat);
+        trunk.position.y = 5;
+        this.treeGroup.add(trunk);
+
+        // Branch clusters
+        const branchCoords = [
+          { x: -3.5, y: 11, z: 0, r: 4.8 },
+          { x: 3.5, y: 12, z: -1, r: 5.2 },
+          { x: 0, y: 13.5, z: 1, r: 5.6 },
+          { x: -4.5, y: 8.5, z: 1.5, r: 3.6 },
+          { x: 4.5, y: 9, z: -1.5, r: 3.8 }
+        ];
+
+        this.foliageMaterials = [];
+        branchCoords.forEach(b => {
+          const foliageMat = new THREE.MeshBasicMaterial({
+            color: 0xFFAEC9,
+            transparent: true,
+            opacity: 0.65
+          });
+          this.foliageMaterials.push(foliageMat);
+
+          const foliageGeom = new THREE.DodecahedronGeometry(b.r, 1);
+          const foliage = new THREE.Mesh(foliageGeom, foliageMat);
+          foliage.position.set(b.x, b.y, b.z);
+          this.treeGroup.add(foliage);
+        });
+
+        this.trunkMat = trunkMat;
+        this.scene.add(this.treeGroup);
+      }
+
+      applyTheme(themeKey, immediate = false) {
+        CONFIG.currentTheme = themeKey;
+        const targetTheme = THEMES[themeKey];
+        document.documentElement.setAttribute('data-theme', themeKey);
+
+        const duration = immediate ? 0 : 700;
+        const startTime = performance.now();
+
+        const initialBg = this.scene.background ? this.scene.background.clone() : targetTheme.bgColor.clone();
+        const initialFog = this.scene.fog.color.clone();
+        const initialBase = this.petalMaterial.uniforms.uColorBase.value.clone();
+        const initialTip = this.petalMaterial.uniforms.uColorTip.value.clone();
+        const initialHighlight = this.petalMaterial.uniforms.uColorHighlight.value.clone();
+        const initialBloomStrength = this.bloomPass.strength;
+        const initialTreeOpacity = this.trunkMat.opacity;
+
+        const animateThemeTransition = (now) => {
+          const elapsed = now - startTime;
+          const progress = immediate ? 1.0 : Math.min(elapsed / duration, 1.0);
+          const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+
+          // Colors Interpolation
+          const curBg = initialBg.clone().lerp(targetTheme.bgColor, ease);
+          this.scene.background = curBg;
+          this.scene.fog.color.copy(curBg);
+
+          this.petalMaterial.uniforms.uColorBase.value.lerpVectors(initialBase, targetTheme.petalBase, ease);
+          this.petalMaterial.uniforms.uColorTip.value.lerpVectors(initialTip, targetTheme.petalTip, ease);
+          this.petalMaterial.uniforms.uColorHighlight.value.lerpVectors(initialHighlight, targetTheme.petalHighlight, ease);
+          this.petalMaterial.uniforms.uThemeFactor.value = themeKey === 'dark' ? ease : 1.0 - ease;
+
+          // Bloom Pass Interpolation
+          this.bloomPass.strength = THREE.MathUtils.lerp(initialBloomStrength, targetTheme.bloomStrength, ease);
+          this.bloomPass.radius = targetTheme.bloomRadius;
+          this.bloomPass.threshold = targetTheme.bloomThreshold;
+
+          // Tree Visibility & Opacity
+          const targetTreeOp = targetTheme.treeOpacity;
+          const curTreeOp = THREE.MathUtils.lerp(initialTreeOpacity, targetTreeOp, ease);
+          this.trunkMat.opacity = curTreeOp;
+          this.foliageMaterials.forEach(m => (m.opacity = curTreeOp * 0.75));
+          this.treeGroup.visible = curTreeOp > 0.01;
+
+          if (progress < 1.0) {
+            requestAnimationFrame(animateThemeTransition);
+          }
+        };
+
+        if (immediate) {
+          animateThemeTransition(performance.now());
+        } else {
+          requestAnimationFrame(animateThemeTransition);
+        }
+      }
+
+      triggerSurge() {
+        // Bankai Surge: Intensifies vortex angular speed and bloom flash
+        this.surgeActive = true;
+        this.surgeFactor = 2.8;
+
+        const originalBloom = THEMES[CONFIG.currentTheme].bloomStrength;
+        this.bloomPass.strength = originalBloom * 2.2;
+
+        setTimeout(() => {
+          this.surgeActive = false;
+        }, 2200);
+      }
+
+      addEventListeners() {
+        window.addEventListener('resize', () => this.onResize());
+
+        window.addEventListener('mousemove', (e) => {
+          this.targetMouse.x = (e.clientX / this.width) * 2 - 1;
+          this.targetMouse.y = -(e.clientY / this.height) * 2 + 1;
+        });
+
+        // Theme Toggle Button
+        const themeBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeLabel = document.getElementById('themeLabel');
+
+        if (themeBtn) {
+          themeBtn.addEventListener('click', () => {
+            const nextTheme = CONFIG.currentTheme === 'light' ? 'dark' : 'light';
+            this.applyTheme(nextTheme);
+
+            if (nextTheme === 'dark') {
+              themeIcon.textContent = '🌙';
+              themeLabel.textContent = 'Modo Oscuro';
+            } else {
+              themeIcon.textContent = '☀️';
+              themeLabel.textContent = 'Modo Claro';
+            }
+          });
+        }
+
+        // Surge Button
+        const surgeBtn = document.getElementById('surgeBtn');
+        if (surgeBtn) {
+          surgeBtn.addEventListener('click', () => this.triggerSurge());
+        }
+      }
+
+      onResize() {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.camera.aspect = this.width / this.height;
+        this.camera.updateProjectionMatrix();
+
+        this.renderer.setSize(this.width, this.height);
+        this.composer.setSize(this.width, this.height);
+      }
+
+      animate() {
+        requestAnimationFrame(() => this.animate());
+
+        const delta = this.clock.getDelta();
+        const elapsedTime = this.clock.getElapsedTime();
+
+        // Smooth mouse dampening
+        this.mouse.lerp(this.targetMouse, 0.04);
+        this.petalMaterial.uniforms.uMouse.value.copy(this.mouse);
+
+        // Smooth Surge decay
+        if (!this.surgeActive && this.surgeFactor > 1.0) {
+          this.surgeFactor = THREE.MathUtils.lerp(this.surgeFactor, 1.0, 0.05);
+          const targetBloom = THEMES[CONFIG.currentTheme].bloomStrength;
+          this.bloomPass.strength = THREE.MathUtils.lerp(this.bloomPass.strength, targetBloom, 0.05);
+        }
+
+        // Update Shader Uniforms
+        this.petalMaterial.uniforms.uTime.value = elapsedTime;
+        this.petalMaterial.uniforms.uSpeedMultiplier.value = CONFIG.baseSpeed * this.surgeFactor;
+
+        // Subtle camera orbit parallax
+        this.camera.position.x = THREE.MathUtils.lerp(this.camera.position.x, this.mouse.x * 2.2, 0.03);
+        this.camera.position.y = THREE.MathUtils.lerp(this.camera.position.y, 2.0 + this.mouse.y * 1.5, 0.03);
+        this.camera.lookAt(0, 1.5, 0);
+
+        // Gentle tree breathing animation in light mode
+        if (this.treeGroup && this.treeGroup.visible) {
+          this.treeGroup.rotation.y = Math.sin(elapsedTime * 0.35) * 0.05;
+        }
+
+        // Post-processed render
+        this.composer.render();
+      }
+    }
+
+    // ──────────────────────────────────────────────────────────
+    // 4. BOOTSTRAP INITIALIZATION
+    // ──────────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      const canvas = document.getElementById('webgl-canvas');
+      new SenbonzakuraVortex(canvas);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CV - Daniel Eduardo Jaimes Gamboa</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 12mm 15mm 12mm 15mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1e1b4b;
+      background: #ffffff;
+      line-height: 1.45;
+      font-size: 10.5pt;
+    }
+    header {
+      border-bottom: 2.5px solid #7c3aed;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .header-left h1 {
+      font-size: 22pt;
+      font-weight: 800;
+      color: #1e1b4b;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .header-left .subtitle {
+      font-size: 12pt;
+      font-weight: 600;
+      color: #7c3aed;
+      margin-top: 4px;
+    }
+    .header-right {
+      text-align: right;
+      font-size: 9.5pt;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+    .header-right a {
+      color: #6d28d9;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .section {
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 11pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #6d28d9;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 3px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #7c3aed;
+      border-radius: 50%;
+    }
+    p.summary {
+      color: #374151;
+      font-size: 10pt;
+      text-align: justify;
+      line-height: 1.5;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .item {
+      margin-bottom: 10px;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+    .item-title {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #111827;
+    }
+    .item-tag {
+      font-size: 8.5pt;
+      background: #f3e8ff;
+      color: #7c3aed;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .item-desc {
+      font-size: 9.5pt;
+      color: #4b5563;
+      line-height: 1.4;
+      margin-top: 2px;
+    }
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .badge {
+      font-size: 8pt;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-weight: 500;
+      border: 1px solid #e2e8f0;
+    }
+    .skills-category {
+      margin-bottom: 6px;
+    }
+    .skills-label {
+      font-weight: 700;
+      color: #374151;
+      font-size: 9.5pt;
+    }
+    .skills-val {
+      color: #4b5563;
+      font-size: 9.5pt;
+    }
+    ul.bullet-list {
+      margin-left: 16px;
+      font-size: 9.5pt;
+      color: #4b5563;
+    }
+    ul.bullet-list li {
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <h1>Daniel Eduardo Jaimes Gamboa</h1>
+      <div class="subtitle">Desarrollador Full Stack · Junior Developer</div>
+    </div>
+    <div class="header-right">
+      <div>📍 Bucaramanga, Santander, Colombia</div>
+      <div>✉️ <a href="mailto:danieljgamboa55@gmail.com">danieljgamboa55@gmail.com</a></div>
+      <div>🌐 <a href="https://github.com/DanielGamboa-10">github.com/DanielGamboa-10</a></div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="section-title">Perfil Profesional</div>
+    <p class="summary">
+      Desarrollador de software con formación técnica y bases sólidas en ingeniería de software. Especializado en construcción de interfaces web modulares, consumo asíncrono de APIs RESTful, diseño responsive y automatización de flujos con Python y n8n. Apasionado por las buenas prácticas de arquitectura, control de versiones (Git Flow), desarrollo ágil (Scrum) y aprendizaje acelerado. Listo para integrarse y aportar valor técnico tangible a equipos de ingeniería y proyectos de alto impacto.
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="section-title">Proyectos Destacados</div>
+
+    <div class="item">
+      <div class="item-header">
+        <span class="item-title">Metrolínea Live — Hackathon Metrolínea</span>
+        <span class="item-tag">FastAPI · YOLOv8 · Leaflet.js</span>
+      </div>
+      <p class="item-desc">
+        Plataforma distribuida de telemetría y geolocalización en tiempo real para el sistema de transporte masivo de Bucaramanga. Desarrollé la interfaz cartográfica interactiva con Leaflet.js, orquesté endpoints asíncronos en FastAPI y desplegué inferencia de visión computacional con YOLOv8 para detección automatizada de incidencias en ruta.
+      </p>
+      <div class="tech-badges">
+        <span class="badge">Python</span>
+        <span class="badge">FastAPI</span>
+        <span class="badge">YOLOv8</span>
+        <span class="badge">JavaScript ES6</span>
+        <span class="badge">Leaflet.js</span>
+        <span class="badge">HTML5 / CSS3</span>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-header">
+        <span class="item-title">DeliveryBot — Automatización & Chatbot Conversacional</span>
+        <span class="item-tag">n8n · Webhooks · Event-Driven</span>
+      </div>
+      <p class="item-desc">
+        Agente conversacional autónomo para canalización y tracking de órdenes de delivery. Implementé arquitectura dirigida por eventos con webhooks entrantes, parsing y estructuración de payloads JSON, validaciones lógicas y despacho en tiempo real de notificaciones de entrega.
+      </p>
+      <div class="tech-badges">
+        <span class="badge">n8n Workflows</span>
+        <span class="badge">Webhooks</span>
+        <span class="badge">JSON Payloads</span>
+        <span class="badge">REST APIs</span>
+        <span class="badge">Event Architecture</span>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="item-header">
+        <span class="item-title">Sistema de Gestión de Préstamos & Inventarios</span>
+        <span class="item-tag">Python · POO · Modular Core</span>
+      </div>
+      <p class="item-desc">
+        Software modular para control de existencias, préstamos y trazabilidad de inventarios comunitarios. Diseñado bajo principios de programación orientada a objetos (POO), persistencia desacoplada en JSON y métricas de uso automatizadas.
+      </p>
+      <div class="tech-badges">
+        <span class="badge">Python 3</span>
+        <span class="badge">POO / OOP</span>
+        <span class="badge">JSON Schema</span>
+        <span class="badge">Backend Logic</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">Habilidades Técnicas</div>
+    <div class="grid-2">
+      <div>
+        <div class="skills-category">
+          <span class="skills-label">Frontend:</span>
+          <span class="skills-val">HTML5, CSS3, JavaScript (ES6+), DOM API, Fetch, Responsive Web Design, Flexbox, CSS Grid.</span>
+        </div>
+        <div class="skills-category">
+          <span class="skills-label">Backend & Bases de Datos:</span>
+          <span class="skills-val">Python, FastAPI, Node.js, SQL Relacional, JSON Schema, RESTful APIs.</span>
+        </div>
+      </div>
+      <div>
+        <div class="skills-category">
+          <span class="skills-label">Automatización & AI:</span>
+          <span class="skills-val">n8n (Workflows & Webhooks), Event-Driven Architecture, Computer Vision (YOLOv8).</span>
+        </div>
+        <div class="skills-category">
+          <span class="skills-label">Herramientas & Métodos:</span>
+          <span class="skills-val">Git, GitHub Flow, Scrum, Linux CLI, Postman, Clean Code, SDLC.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">Educación & Formación</div>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-title">Técnico en Desarrollo de Software</span>
+        <span class="item-tag">Bucaramanga, Colombia</span>
+      </div>
+      <p class="item-desc">Formación enfocada en lógica de programación, bases de datos relacionales, frontend web y ciclo de vida de desarrollo de software.</p>
+    </div>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-title">Bachiller Académico</span>
+        <span class="item-tag">Graduado</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">Idiomas & Aptitudes</div>
+    <div class="grid-2">
+      <div class="skills-category">
+        <span class="skills-label">Idiomas:</span>
+        <span class="skills-val">Español (Nativo), Inglés Técnico (Lectura de documentación técnica).</span>
+      </div>
+      <div class="skills-category">
+        <span class="skills-label">Soft Skills:</span>
+        <span class="skills-val">Resolución de problemas, adaptabilidad, trabajo en equipo ágil, autogestión.</span>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
