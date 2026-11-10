@@ -755,15 +755,16 @@ window.addEventListener('DOMContentLoaded', () => {
     { text: '→ Daniel Gamboa (Daniel E. Jaimes)', cls: 'out' },
     { text: '',                                   cls: 'out'    },
     { text: 'cat stack.json',                     cls: 'prompt' },
-    { text: '{ frontend: "HTML/CSS/JS" }',        cls: 'accent' },
-    { text: '{ backend:  "Python/Node" }',        cls: 'accent' },
-    { text: '{ data:     "SQL" }',                cls: 'accent' },
-    { text: '{ bots:     "n8n" }',                cls: 'accent' },
+    { text: '{ backend:  "Java / Spring Boot" }',  cls: 'accent' },
+    { text: '{ ai:       "LangChain / Python" }',  cls: 'accent' },
+    { text: '{ arch:     "Hexagonal / DDD" }',     cls: 'accent' },
+    { text: '{ devops:   "Docker / Compose" }',    cls: 'accent' },
+    { text: '{ frontend: "JS ES6+ / Responsive" }',cls: 'accent' },
     { text: '',                                   cls: 'out'    },
     { text: 'git log --oneline',                  cls: 'prompt' },
-    { text: '✔ Hackathon Metrolínea',             cls: 'out'    },
-    { text: '✔ DeliveryBot con n8n',              cls: 'out'    },
-    { text: '✔ Sistema préstamos vecinal',        cls: 'out'    },
+    { text: '✔ ChatBot-Futbol (LangChain & Docker)',cls: 'out'  },
+    { text: '✔ RentaTools (Spring Boot Modular)', cls: 'out'    },
+    { text: '✔ Hackathon Metrolínea (AI Realtime)',cls: 'out'   },
   ];
 
   let terminalStarted = false;
