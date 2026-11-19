@@ -249,6 +249,81 @@ section,
   bottom: 24px;
   right: 24px;
   z-index: 998;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.lang-dock-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 0.3rem;
+  border-radius: 99px;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: all var(--transition);
+}
+.lang-dock-group:hover {
+  border-color: var(--accent-color);
+}
+.lang-switch-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-disp);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.32rem 0.65rem;
+  border-radius: 99px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all var(--transition);
+}
+.lang-switch-btn:hover {
+  color: var(--text-color);
+  background: var(--tag-bg);
+}
+.lang-switch-btn.active {
+  background: var(--accent-color);
+  color: #fff;
+  box-shadow: 0 3px 10px var(--accent-glow);
+}
+.lang-nav-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 0.2rem;
+  border-radius: 99px;
+}
+.lang-nav-switcher .lang-switch-btn {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.74rem;
+}
+.mobile-lang-switcher {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.mobile-lang-switcher .lang-switch-btn {
+  flex: 1;
+  justify-content: center;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  font-size: 0.85rem;
+}
+.mobile-lang-switcher .lang-switch-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
 }
 .theme-dock-btn {
   display: flex;

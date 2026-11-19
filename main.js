@@ -716,6 +716,9 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   let toastTimer = null;
+  let currentLang = localStorage.getItem('portfolio_lang') || 'es';
+  if (!['es', 'en', 'pt'].includes(currentLang)) currentLang = 'es';
+
   function showDownloadToast(filename, isEnglish = false) {
     const toast = document.getElementById('downloadToast');
     if (!toast) return;
@@ -724,7 +727,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const msgEl = toast.querySelector('.toast-msg');
 
     if (titleEl && msgEl) {
-      if (isEnglish) {
+      if (currentLang === 'pt') {
+        titleEl.textContent = 'Currículo baixado!';
+        msgEl.textContent = `${filename} (Pronto para revisão)`;
+      } else if (isEnglish || currentLang === 'en') {
         titleEl.textContent = 'CV Downloaded!';
         msgEl.textContent = `${filename} (Ready for review)`;
       } else {
@@ -748,6 +754,252 @@ window.addEventListener('DOMContentLoaded', () => {
       showDownloadToast(downloadAttr, isEnglish);
     });
   });
+
+  // ── 10.5. SISTEMA MULTILENGUAJE (ESPAÑOL / INGLÉS / PORTUGUÉS) ──
+  const I18N = {
+    es: {
+      theme_btn: 'Tema',
+      nav_about: 'Sobre mí',
+      nav_skills: 'Skills',
+      nav_projects: 'Proyectos',
+      nav_cv: 'Descargar CV ▾',
+      nav_contact: 'Contacto',
+      cv_es_pdf: 'Español (PDF)',
+      cv_es_sub: 'Versión original en español',
+      cv_en_pdf: 'English (PDF)',
+      cv_en_sub: 'Versión traducida al inglés',
+      cv_png_label: 'Descargar como Imagen (PNG):',
+      mob_cv_es: '📄 🇪🇸 Descargar CV (Español)',
+      mob_cv_en: '📄 🇺🇸 Download CV (English)',
+      mob_theme: 'Cambiar Modo Claro / Oscuro',
+      hero_eyebrow: 'Buscando primera práctica',
+      hero_title: 'Hola, soy<br /><span class="accent">Daniel Gamboa</span><br />AI & Backend Dev',
+      hero_subtitle: 'Estudiante de desarrollo de software especializado en Inteligencia Artificial y arquitecturas Backend robustas en Java y Python. De Bucaramanga para el mundo 🇨🇴 — siempre aprendiendo, siempre creando.',
+      hero_btn_projects: 'Ver proyectos',
+      hero_btn_cv: 'Descargar CV',
+      about_badge: 'En formación 🚀',
+      about_eyebrow: '// sobre_mi.md',
+      about_p1: 'Soy estudiante de desarrollo de software en Campuslands, combinando el desarrollo backend de nivel empresarial con modelos avanzados de Inteligencia Artificial. Me enfoco en arquitecturas desacopladas, principios de Clean Architecture y soluciones escalables.',
+      about_p2: 'He construido proyectos que van desde <strong>asistentes conversacionales con LangChain</strong> y <strong>monolitos modulares en Spring Boot</strong> hasta <strong>sistemas de telemetría y visión artificial</strong> para transporte masivo. Cada proyecto representa un reto de ingeniería resuelto con código limpio y buenas prácticas.',
+      about_p3: 'Soy de <strong>Bucaramanga, Colombia</strong>, busco mi práctica profesional y estoy listo para integrarme a equipos de alto impacto en desarrollo Backend o Ingeniería de IA.',
+      about_tag_hex: 'Arquitectura Hexagonal',
+      skills_title: 'Lo que sé usar',
+      skills_desc: 'Mis herramientas actuales. Nivel honesto, sin inflar números.',
+      skill_cat_backend: 'Backend & Arquitectura',
+      skill_hex_ddd: 'Arquitectura Hexagonal / DDD',
+      skill_cat_ai: 'IA & Datos',
+      skill_db: 'Bases de Datos (SQL / Flyway)',
+      skill_cat_devops: 'DevOps & Frontend',
+      skill_docker: 'Docker & Contenedores',
+      projects_title: 'Lo que he construido',
+      projects_desc: 'Proyectos reales del proceso de aprendizaje. Cada uno representa un reto nuevo.',
+      p1_title: 'Tribuna Global — ChatBot de Fútbol',
+      p1_desc: 'Sistema inteligente con IA generativa para análisis de percepción y estadísticas de futbolistas. Integra flujos conversacionales con <strong>LangChain</strong>, interfaz en <strong>Streamlit</strong> y despliegue modular contenerizado con <strong>Docker Compose</strong>.',
+      p2_title: 'RentaTools — Alquiler de Maquinaria',
+      p2_desc: 'Plataforma de backend empresarial basada en un <strong>Monolito Modular</strong> con <strong>Arquitectura Hexagonal (Puertos y Adaptadores)</strong> y <strong>DDD</strong>. Seguridad con Spring Security 6.5 (JWT), migraciones con Flyway, pruebas con ArchUnit y containerización con Docker Compose.',
+      p3_badge: '🔐 Proyecto SICA',
+      p3_title: 'SICA — Control de Acceso',
+      p3_desc: 'Sistema de control de acceso para zonas de alta seguridad en Java Puro con JDBC. Implementa Arquitectura Hexagonal, Vertical Slicing, persistencia desacoplada y RBAC empresarial.',
+      tag_pure_java: 'Java Puro',
+      p4_desc: 'Monitoreo y geolocalización en tiempo real para transporte público desarrollado para la <strong>Hackathon Metrolínea</strong>. Estimación de tiempos y detección de incidentes mediante visión por computador (YOLOv8).',
+      p5_title: 'Banco Acme — Autogestión Bancaria',
+      p5_desc: 'Aplicación web SPA para administración de cuentas, transferencias y extractos bancarios. Construida con JavaScript Vanilla, modularización de componentes y persistencia local reactiva.',
+      p6_title: 'Simulación F1 — Java Puro',
+      p6_desc: 'Motor de simulación y administración de escuderías, monoplazas y clasificación en Java SE Puro sin dependencias. Uso intensivo de estructuras de datos en memoria (Maps/HashMaps), Maven y automatización por scripts.',
+      tag_data_struct: 'Estructuras de Datos',
+      view_github: 'Ver en GitHub',
+      view_github_codev: 'Ver en GitHub (Co-Dev)',
+      contact_eyebrow: '// contacto.sh',
+      contact_title: '¿Le damos a esto<br /><span>juntos?</span>',
+      contact_desc: 'Estoy buscando mi primera práctica y listo para aportar desde el día uno. Si tienes un proyecto, un equipo o simplemente quieres conectar — escríbeme.',
+      contact_cv_btn: 'Descargar CV (ES / EN)',
+      footer_copy: '© 2026 Daniel Gamboa (Daniel Eduardo Jaimes Gamboa) — Bucaramanga, Colombia',
+      modal_title: 'Descargar Curriculum Vitae',
+      modal_subtitle: 'Selecciona tu idioma preferido / Select your preferred language',
+      modal_es_title: 'Versión en Español',
+      modal_es_desc: 'Desarrollador Full Stack — Perfil técnico, formación y proyectos en español.',
+      modal_btn_pdf_es: '📄 Descargar PDF',
+      modal_btn_img_es: '🖼️ Descargar Imagen',
+      modal_en_title: 'English Version',
+      modal_en_desc: 'Full Stack Developer — Full technical profile, training & projects in English.',
+      modal_btn_pdf_en: '📄 Download PDF',
+      modal_btn_img_en: '🖼️ Download Image'
+    },
+    en: {
+      theme_btn: 'Theme',
+      nav_about: 'About me',
+      nav_skills: 'Skills',
+      nav_projects: 'Projects',
+      nav_cv: 'Download CV ▾',
+      nav_contact: 'Contact',
+      cv_es_pdf: 'Spanish (PDF)',
+      cv_es_sub: 'Original Spanish version',
+      cv_en_pdf: 'English (PDF)',
+      cv_en_sub: 'English translation version',
+      cv_png_label: 'Download as Image (PNG):',
+      mob_cv_es: '📄 🇪🇸 Download CV (Spanish)',
+      mob_cv_en: '📄 🇺🇸 Download CV (English)',
+      mob_theme: 'Toggle Light / Dark Mode',
+      hero_eyebrow: 'Looking for my first internship',
+      hero_title: 'Hi, I\'m<br /><span class="accent">Daniel Gamboa</span><br />AI & Backend Dev',
+      hero_subtitle: 'Software development student specializing in Artificial Intelligence and robust Backend architectures in Java and Python. From Bucaramanga to the world 🇨🇴 — always learning, always building.',
+      hero_btn_projects: 'View projects',
+      hero_btn_cv: 'Download CV',
+      about_badge: 'In training 🚀',
+      about_eyebrow: '// about_me.md',
+      about_p1: 'I am a software development student at Campuslands, combining enterprise-grade backend development with advanced Artificial Intelligence models. I focus on decoupled architectures, Clean Architecture principles, and scalable solutions.',
+      about_p2: 'I have built projects ranging from <strong>conversational assistants with LangChain</strong> and <strong>modular monoliths in Spring Boot</strong> to <strong>telemetry and computer vision systems</strong> for mass transit. Each project represents an engineering challenge solved with clean code and best practices.',
+      about_p3: 'I am from <strong>Bucaramanga, Colombia</strong>, looking for my professional internship and ready to join high-impact teams in Backend Development or AI Engineering.',
+      about_tag_hex: 'Hexagonal Architecture',
+      skills_title: 'What I work with',
+      skills_desc: 'My current toolkit. Honest proficiency levels, no inflated numbers.',
+      skill_cat_backend: 'Backend & Architecture',
+      skill_hex_ddd: 'Hexagonal Architecture / DDD',
+      skill_cat_ai: 'AI & Data',
+      skill_db: 'Databases (SQL / Flyway)',
+      skill_cat_devops: 'DevOps & Frontend',
+      skill_docker: 'Docker & Containers',
+      projects_title: 'What I have built',
+      projects_desc: 'Real projects from my learning journey. Each one represents a new challenge.',
+      p1_title: 'Tribuna Global — Football ChatBot',
+      p1_desc: 'Intelligent generative AI system for player perception and statistics analysis. Integrates conversational workflows with <strong>LangChain</strong>, a <strong>Streamlit</strong> interface, and containerized modular deployment with <strong>Docker Compose</strong>.',
+      p2_title: 'RentaTools — Machinery Rental',
+      p2_desc: 'Enterprise backend platform based on a <strong>Modular Monolith</strong> with <strong>Hexagonal Architecture (Ports & Adapters)</strong> and <strong>DDD</strong>. Security with Spring Security 6.5 (JWT), Flyway migrations, ArchUnit tests, and Docker Compose containerization.',
+      p3_badge: '🔐 SICA Project',
+      p3_title: 'SICA — Access Control',
+      p3_desc: 'Access control system for high-security zones built in Pure Java with JDBC. Implements Hexagonal Architecture, Vertical Slicing, decoupled persistence, and enterprise RBAC.',
+      tag_pure_java: 'Pure Java',
+      p4_desc: 'Real-time public transit monitoring and geolocation developed for the <strong>Metrolínea Hackathon</strong>. ETA estimation and incident detection powered by computer vision (YOLOv8).',
+      p5_title: 'Acme Bank — Self-Service Banking',
+      p5_desc: 'SPA web application for account management, wire transfers, and bank statements. Built with Vanilla JavaScript, component modularization, and reactive local persistence.',
+      p6_title: 'F1 Simulation — Pure Java',
+      p6_desc: 'Simulation and management engine for F1 teams, race cars, and standings in Pure Java SE with zero external dependencies. Intensive use of in-memory data structures (Maps/HashMaps), Maven, and batch script automation.',
+      tag_data_struct: 'Data Structures',
+      view_github: 'View on GitHub',
+      view_github_codev: 'View on GitHub (Co-Dev)',
+      contact_eyebrow: '// contact.sh',
+      contact_title: 'Shall we build this<br /><span>together?</span>',
+      contact_desc: 'I am looking for my first internship and ready to contribute from day one. If you have a project, a team, or just want to connect — drop me a line.',
+      contact_cv_btn: 'Download CV (ES / EN)',
+      footer_copy: '© 2026 Daniel Gamboa (Daniel Eduardo Jaimes Gamboa) — Bucaramanga, Colombia',
+      modal_title: 'Download Curriculum Vitae',
+      modal_subtitle: 'Select your preferred language / Selecciona tu idioma preferido',
+      modal_es_title: 'Spanish Version',
+      modal_es_desc: 'Full Stack Developer — Technical profile, education, and projects in Spanish.',
+      modal_btn_pdf_es: '📄 Download PDF',
+      modal_btn_img_es: '🖼️ Download Image',
+      modal_en_title: 'English Version',
+      modal_en_desc: 'Full Stack Developer — Full technical profile, training & projects in English.',
+      modal_btn_pdf_en: '📄 Download PDF',
+      modal_btn_img_en: '🖼️ Download Image'
+    },
+    pt: {
+      theme_btn: 'Tema',
+      nav_about: 'Sobre mim',
+      nav_skills: 'Skills',
+      nav_projects: 'Projetos',
+      nav_cv: 'Baixar CV ▾',
+      nav_contact: 'Contato',
+      cv_es_pdf: 'Espanhol (PDF)',
+      cv_es_sub: 'Versão original em espanhol',
+      cv_en_pdf: 'Inglês (PDF)',
+      cv_en_sub: 'Versão traduzida para inglês',
+      cv_png_label: 'Baixar como Imagem (PNG):',
+      mob_cv_es: '📄 🇪🇸 Baixar CV (Espanhol)',
+      mob_cv_en: '📄 🇺🇸 Baixar CV (Inglês)',
+      mob_theme: 'Alternar Modo Claro / Escuro',
+      hero_eyebrow: 'Buscando meu primeiro estágio',
+      hero_title: 'Olá, eu sou<br /><span class="accent">Daniel Gamboa</span><br />AI & Backend Dev',
+      hero_subtitle: 'Estudante de desenvolvimento de software especializado em Inteligência Artificial e arquiteturas Backend robustas em Java e Python. De Bucaramanga para o mundo 🇨🇴 — sempre aprendendo, sempre criando.',
+      hero_btn_projects: 'Ver projetos',
+      hero_btn_cv: 'Baixar CV',
+      about_badge: 'Em formação 🚀',
+      about_eyebrow: '// sobre_mim.md',
+      about_p1: 'Sou estudante de desenvolvimento de software na Campuslands, combinando o desenvolvimento backend de nível empresarial com modelos avançados de Inteligência Artificial. Foco em arquiteturas desacopladas, princípios de Clean Architecture e soluções escaláveis.',
+      about_p2: 'Construí projetos que vão desde <strong>assistentes conversacionais com LangChain</strong> e <strong>monólitos modulares em Spring Boot</strong> até <strong>sistemas de telemetria e visão computacional</strong> para transporte público. Cada projeto representa um desafio de engenharia resolvido com código limpo e boas práticas.',
+      about_p3: 'Sou de <strong>Bucaramanga, Colômbia</strong>, busco meu estágio profissional e estou pronto para integrar equipes de alto impacto em desenvolvimento Backend ou Engenharia de IA.',
+      about_tag_hex: 'Arquitetura Hexagonal',
+      skills_title: 'O que eu sei usar',
+      skills_desc: 'Minhas ferramentas atuais. Nível honesto, sem inflar números.',
+      skill_cat_backend: 'Backend & Arquitetura',
+      skill_hex_ddd: 'Arquitetura Hexagonal / DDD',
+      skill_cat_ai: 'IA & Dados',
+      skill_db: 'Bancos de Dados (SQL / Flyway)',
+      skill_cat_devops: 'DevOps & Frontend',
+      skill_docker: 'Docker & Contêineres',
+      projects_title: 'O que já construí',
+      projects_desc: 'Projetos reais do processo de aprendizagem. Cada um representa um novo desafio.',
+      p1_title: 'Tribuna Global — ChatBot de Futebol',
+      p1_desc: 'Sistema inteligente com IA generativa para análise de percepção e estatísticas de jogadores de futebol. Integra fluxos conversacionais com <strong>LangChain</strong>, interface em <strong>Streamlit</strong> e implantação modular em contêineres com <strong>Docker Compose</strong>.',
+      p2_title: 'RentaTools — Aluguel de Maquinário',
+      p2_desc: 'Plataforma de backend empresarial baseada em um <strong>Monólito Modular</strong> com <strong>Arquitetura Hexagonal (Portas e Adaptadores)</strong> e <strong>DDD</strong>. Segurança com Spring Security 6.5 (JWT), migrações com Flyway, testes com ArchUnit e conteinerização com Docker Compose.',
+      p3_badge: '🔐 Projeto SICA',
+      p3_title: 'SICA — Controle de Acesso',
+      p3_desc: 'Sistema de controle de acesso para zonas de alta segurança em Java Puro com JDBC. Implementa Arquitetura Hexagonal, Vertical Slicing, persistência desacoplada e RBAC empresarial.',
+      tag_pure_java: 'Java Puro',
+      p4_desc: 'Monitoramento e geolocalização em tempo real para transporte público desenvolvido para a <strong>Hackathon Metrolínea</strong>. Estimativa de tempos e detecção de incidentes por meio de visão computacional (YOLOv8).',
+      p5_title: 'Banco Acme — Autoatendimento Bancário',
+      p5_desc: 'Aplicação web SPA para administração de contas, transferências e extratos bancários. Construída com JavaScript Vanilla, modularização de componentes e persistência local reativa.',
+      p6_title: 'Simulação F1 — Java Puro',
+      p6_desc: 'Motor de simulação e administração de equipes, carros e classificação em Java SE Puro sem dependências. Uso intensivo de estruturas de dados em memória (Maps/HashMaps), Maven e automação por scripts.',
+      tag_data_struct: 'Estruturas de Dados',
+      view_github: 'Ver no GitHub',
+      view_github_codev: 'Ver no GitHub (Co-Dev)',
+      contact_eyebrow: '// contato.sh',
+      contact_title: 'Vamos construir isso<br /><span>juntos?</span>',
+      contact_desc: 'Estou buscando meu primeiro estágio e pronto para contribuir desde o primeiro dia. Se você tem um projeto, uma equipe ou apenas quer se conectar — fale comigo.',
+      contact_cv_btn: 'Baixar CV (ES / EN)',
+      footer_copy: '© 2026 Daniel Gamboa (Daniel Eduardo Jaimes Gamboa) — Bucaramanga, Colômbia',
+      modal_title: 'Baixar Curriculum Vitae',
+      modal_subtitle: 'Selecione seu idioma preferido / Select your preferred language',
+      modal_es_title: 'Versão em Espanhol',
+      modal_es_desc: 'Desenvolvedor Full Stack — Perfil técnico, formação e projetos em espanhol.',
+      modal_btn_pdf_es: '📄 Baixar PDF',
+      modal_btn_img_es: '🖼️ Baixar Imagem',
+      modal_en_title: 'Versão em Inglês',
+      modal_en_desc: 'Full Stack Developer — Perfil técnico completo, formação e projetos em inglês.',
+      modal_btn_pdf_en: '📄 Baixar PDF',
+      modal_btn_img_en: '🖼️ Baixar Imagem'
+    }
+  };
+
+  function applyLanguage(lang) {
+    if (!I18N[lang]) return;
+    currentLang = lang;
+    document.documentElement.setAttribute('lang', lang);
+    localStorage.setItem('portfolio_lang', lang);
+
+    const dict = I18N[lang];
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) {
+        el.textContent = dict[key];
+      }
+    });
+
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (dict[key] !== undefined) {
+        el.innerHTML = dict[key];
+      }
+    });
+
+    document.querySelectorAll('.lang-switch-btn[data-set-lang]').forEach(btn => {
+      const isCurrent = btn.getAttribute('data-set-lang') === lang;
+      btn.classList.toggle('active', isCurrent);
+      btn.setAttribute('aria-pressed', isCurrent ? 'true' : 'false');
+    });
+  }
+
+  document.querySelectorAll('.lang-switch-btn[data-set-lang]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetLang = btn.getAttribute('data-set-lang');
+      applyLanguage(targetLang);
+    });
+  });
+
+  applyLanguage(currentLang);
 
   // ── 11. TERMINAL TYPEWRITER (STACK Y EXPERIENCIA DE DANIEL) ──
   const terminalLines = [

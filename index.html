@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css?v=2.1" />
+  <link rel="stylesheet" href="styles.css?v=2.2" />
 
   <!-- Librería Three.js (Sin dependencias externas ni texturas bloqueantes) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -103,12 +103,17 @@
     </div>
   </div>
 
-  <!-- BOTÓN FLOTANTE PARA CAMBIAR TEMA -->
-  <div class="floating-theme-dock" aria-label="Selector de tema">
+  <!-- BOTONES FLOTANTES PARA TEMA E IDIOMA -->
+  <div class="floating-theme-dock" aria-label="Controles flotantes">
+    <div class="lang-dock-group" role="group" aria-label="Selector de idioma">
+      <button type="button" class="lang-switch-btn active" data-set-lang="es" title="Español">🇪🇸 ES</button>
+      <button type="button" class="lang-switch-btn" data-set-lang="en" title="English">🇺🇸 EN</button>
+      <button type="button" class="lang-switch-btn" data-set-lang="pt" title="Português">🇧🇷 PT</button>
+    </div>
     <button id="themeToggleDock" class="theme-dock-btn" title="Alternar Modo Claro / Modo Oscuro" aria-label="Alternar tema de color">
       <span class="theme-icon sun-icon" aria-hidden="true">☀️</span>
       <span class="theme-icon moon-icon" aria-hidden="true">🌙</span>
-      <span class="theme-label">Tema</span>
+      <span class="theme-label" data-i18n="theme_btn">Tema</span>
     </button>
   </div>
 
@@ -120,38 +125,45 @@
       <a href="#hero" class="nav-logo">daniel<span>.dev</span></a>
       
       <ul class="nav-links" role="list">
-        <li><a href="#about">Sobre mí</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Proyectos</a></li>
+        <li><a href="#about" data-i18n="nav_about">Sobre mí</a></li>
+        <li><a href="#skills" data-i18n="nav_skills">Skills</a></li>
+        <li><a href="#projects" data-i18n="nav_projects">Proyectos</a></li>
         <li class="nav-cv-dropdown-wrap">
           <button class="nav-cv-btn" id="navCvBtn" aria-expanded="false" title="Descargar CV en Español o Inglés">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Descargar CV ▾
+            <span data-i18n="nav_cv">Descargar CV ▾</span>
           </button>
           <div class="cv-dropdown-menu" id="cvDropdownMenu">
             <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="cv-dropdown-item btn-download-trigger" data-lang="es">
               <span class="flag">🇪🇸</span>
               <div>
-                <strong>Español (PDF)</strong>
-                <small>Versión original en español</small>
+                <strong data-i18n="cv_es_pdf">Español (PDF)</strong>
+                <small data-i18n="cv_es_sub">Versión original en español</small>
               </div>
             </a>
             <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="cv-dropdown-item btn-download-trigger" data-lang="en">
               <span class="flag">🇺🇸</span>
               <div>
-                <strong>English (PDF)</strong>
-                <small>English translation version</small>
+                <strong data-i18n="cv_en_pdf">English (PDF)</strong>
+                <small data-i18n="cv_en_sub">English translation version</small>
               </div>
             </a>
             <div class="cv-dropdown-divider"></div>
-            <div class="cv-dropdown-sub">Descargar como Imagen (PNG):</div>
+            <div class="cv-dropdown-sub" data-i18n="cv_png_label">Descargar como Imagen (PNG):</div>
             <div class="cv-png-row">
               <a href="assets/cv_daniel_jaimes_es.png" download="cv_daniel_jaimes_es.png" class="cv-png-link btn-download-trigger" data-lang="es">🇪🇸 PNG</a>
               <a href="assets/cv_daniel_jaimes_en.png" download="cv_daniel_jaimes_en.png" class="cv-png-link btn-download-trigger" data-lang="en">🇺🇸 PNG</a>
             </div>
           </div>
         </li>
-        <li><a href="#contact" class="nav-cta">Contacto</a></li>
+        <li><a href="#contact" class="nav-cta" data-i18n="nav_contact">Contacto</a></li>
+        <li class="nav-lang-item">
+          <div class="lang-nav-switcher" role="group" aria-label="Idioma / Language / Idioma">
+            <button type="button" class="lang-switch-btn active" data-set-lang="es" title="Español">ES</button>
+            <button type="button" class="lang-switch-btn" data-set-lang="en" title="English">EN</button>
+            <button type="button" class="lang-switch-btn" data-set-lang="pt" title="Português">PT</button>
+          </div>
+        </li>
         <li>
           <button id="themeToggleNav" class="theme-nav-btn" title="Alternar tema" aria-label="Alternar tema">
             <span class="theme-icon sun-icon" aria-hidden="true">☀️</span>
@@ -167,18 +179,23 @@
 
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Menú móvil">
-      <a href="#about" class="mobile-link">Sobre mí</a>
-      <a href="#skills" class="mobile-link">Skills</a>
-      <a href="#projects" class="mobile-link">Proyectos</a>
+      <a href="#about" class="mobile-link" data-i18n="nav_about">Sobre mí</a>
+      <a href="#skills" class="mobile-link" data-i18n="nav_skills">Skills</a>
+      <a href="#projects" class="mobile-link" data-i18n="nav_projects">Proyectos</a>
       <div class="mobile-cv-group" style="padding: 0.35rem 0; display:flex; flex-direction:column; gap:0.4rem;">
-        <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="mobile-link mobile-cv-link btn-download-trigger" data-lang="es">📄 🇪🇸 Descargar CV (Español)</a>
-        <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="mobile-link mobile-cv-link btn-download-trigger" data-lang="en">📄 🇺🇸 Download CV (English)</a>
+        <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="mobile-link mobile-cv-link btn-download-trigger" data-lang="es" data-i18n="mob_cv_es">📄 🇪🇸 Descargar CV (Español)</a>
+        <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="mobile-link mobile-cv-link btn-download-trigger" data-lang="en" data-i18n="mob_cv_en">📄 🇺🇸 Download CV (English)</a>
       </div>
-      <a href="#contact" class="mobile-link mobile-cta">Contacto</a>
+      <a href="#contact" class="mobile-link mobile-cta" data-i18n="nav_contact">Contacto</a>
+      <div class="mobile-lang-switcher" role="group" aria-label="Selector de idioma móvil">
+        <button type="button" class="lang-switch-btn active" data-set-lang="es">🇪🇸 Español</button>
+        <button type="button" class="lang-switch-btn" data-set-lang="en">🇺🇸 English</button>
+        <button type="button" class="lang-switch-btn" data-set-lang="pt">🇧🇷 Português</button>
+      </div>
       <button id="themeToggleMobile" class="mobile-theme-btn" aria-label="Alternar tema">
         <span class="theme-icon sun-icon" aria-hidden="true">☀️</span>
         <span class="theme-icon moon-icon" aria-hidden="true">🌙</span>
-        <span>Cambiar Modo Claro / Oscuro</span>
+        <span data-i18n="mob_theme">Cambiar Modo Claro / Oscuro</span>
       </button>
     </div>
 
@@ -190,25 +207,25 @@
       </div>
       <div class="hero-grid">
         <div class="hero-content">
-          <div class="hero-eyebrow">Buscando primera práctica</div>
-          <h1 class="hero-title">
+          <div class="hero-eyebrow" data-i18n="hero_eyebrow">Buscando primera práctica</div>
+          <h1 class="hero-title" data-i18n-html="hero_title">
             Hola, soy<br />
             <span class="accent">Daniel Gamboa</span><br />
             AI & Backend Dev
           </h1>
-          <p class="hero-subtitle">
+          <p class="hero-subtitle" data-i18n="hero_subtitle">
             Estudiante de desarrollo de software especializado en Inteligencia Artificial y arquitecturas Backend robustas en Java y Python.
             De Bucaramanga para el mundo 🇨🇴 — siempre aprendiendo, siempre creando.
           </p>
           <div class="hero-actions">
             <a href="#projects" class="btn-primary">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-              Ver proyectos
+              <span data-i18n="hero_btn_projects">Ver proyectos</span>
             </a>
             <div class="cv-download-group">
               <button type="button" class="btn-primary btn-cv-hero" id="openCvModalBtn" aria-label="Abrir opciones de descarga de CV">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Descargar CV
+                <span data-i18n="hero_btn_cv">Descargar CV</span>
                 <span class="cv-badge-lang">ES / EN</span>
               </button>
               <div class="cv-quick-links">
@@ -243,21 +260,21 @@
             <div class="avatar-frame" role="img" aria-label="Foto de perfil de Daniel Gamboa">
               <img src="image.png" alt="Daniel Eduardo Jaimes Gamboa" id="userAvatarImg" />
             </div>
-            <div class="avatar-badge">En formación 🚀</div>
+            <div class="avatar-badge" data-i18n="about_badge">En formación 🚀</div>
           </div>
           <div class="about-text reveal">
-            <p class="section-eyebrow">// sobre_mi.md</p>
+            <p class="section-eyebrow" data-i18n="about_eyebrow">// sobre_mi.md</p>
             <h2 class="section-title" id="about-heading">Daniel Eduardo Jaimes Gamboa</h2>
             <div class="divider" aria-hidden="true"></div>
-            <p>
+            <p data-i18n-html="about_p1">
               Soy estudiante de desarrollo de software en Campuslands, combinando el desarrollo backend de nivel empresarial con modelos avanzados de Inteligencia Artificial.
               Me enfoco en arquitecturas desacopladas, principios de Clean Architecture y soluciones escalables.
             </p>
-            <p>
+            <p data-i18n-html="about_p2">
               He construido proyectos que van desde <strong>asistentes conversacionales con LangChain</strong> y <strong>monolitos modulares en Spring Boot</strong> hasta <strong>sistemas de telemetría y visión artificial</strong> para transporte masivo.
               Cada proyecto representa un reto de ingeniería resuelto con código limpio y buenas prácticas.
             </p>
-            <p>
+            <p data-i18n-html="about_p3">
               Soy de <strong>Bucaramanga, Colombia</strong>, busco mi práctica profesional y estoy listo para integrarme a equipos de alto impacto en desarrollo Backend o Ingeniería de IA.
             </p>
             <ul class="tag-list" role="list" aria-label="Tecnologías">
@@ -268,7 +285,7 @@
               <li class="tag">Docker</li>
               <li class="tag">SQL / PostgreSQL</li>
               <li class="tag">JavaScript</li>
-              <li class="tag">Arquitectura Hexagonal</li>
+              <li class="tag" data-i18n="about_tag_hex">Arquitectura Hexagonal</li>
             </ul>
           </div>
         </div>
@@ -279,15 +296,15 @@
     <section id="skills" aria-labelledby="skills-heading">
       <div class="section-inner">
         <p class="section-eyebrow">// stack.json</p>
-        <h2 class="section-title" id="skills-heading">Lo que sé usar</h2>
+        <h2 class="section-title" id="skills-heading" data-i18n="skills_title">Lo que sé usar</h2>
         <div class="divider" aria-hidden="true"></div>
-        <p class="section-desc" style="margin-bottom:2.5rem">
+        <p class="section-desc" style="margin-bottom:2.5rem" data-i18n="skills_desc">
           Mis herramientas actuales. Nivel honesto, sin inflar números.
         </p>
         <div class="skills-grid">
           <article class="skill-card reveal" aria-label="Backend y Arquitectura">
             <div class="skill-icon" aria-hidden="true">⚙️</div>
-            <h3 class="skill-category">Backend & Arquitectura</h3>
+            <h3 class="skill-category" data-i18n="skill_cat_backend">Backend & Arquitectura</h3>
             <div class="skill-item">
               <span class="skill-name">Java & Spring Boot</span>
               <div class="skill-bar-wrap" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Java y Spring Boot: 85%">
@@ -303,7 +320,7 @@
               <span class="skill-pct">82%</span>
             </div>
             <div class="skill-item">
-              <span class="skill-name">Arquitectura Hexagonal / DDD</span>
+              <span class="skill-name" data-i18n="skill_hex_ddd">Arquitectura Hexagonal / DDD</span>
               <div class="skill-bar-wrap" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Arquitectura Hexagonal y DDD: 80%">
                 <div class="skill-bar" data-w="80"></div>
               </div>
@@ -313,7 +330,7 @@
 
           <article class="skill-card reveal" aria-label="Inteligencia Artificial y Datos">
             <div class="skill-icon" aria-hidden="true">🧠</div>
-            <h3 class="skill-category">IA & Datos</h3>
+            <h3 class="skill-category" data-i18n="skill_cat_ai">IA & Datos</h3>
             <div class="skill-item">
               <span class="skill-name">LangChain & LLMs</span>
               <div class="skill-bar-wrap" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" aria-label="LangChain y LLMs: 78%">
@@ -322,7 +339,7 @@
               <span class="skill-pct">78%</span>
             </div>
             <div class="skill-item">
-              <span class="skill-name">Bases de Datos (SQL / Flyway)</span>
+              <span class="skill-name" data-i18n="skill_db">Bases de Datos (SQL / Flyway)</span>
               <div class="skill-bar-wrap" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Bases de Datos SQL: 75%">
                 <div class="skill-bar" data-w="75"></div>
               </div>
@@ -339,9 +356,9 @@
 
           <article class="skill-card reveal" aria-label="Frontend y DevOps">
             <div class="skill-icon" aria-hidden="true">🛠️</div>
-            <h3 class="skill-category">DevOps & Frontend</h3>
+            <h3 class="skill-category" data-i18n="skill_cat_devops">DevOps & Frontend</h3>
             <div class="skill-item">
-              <span class="skill-name">Docker & Contenedores</span>
+              <span class="skill-name" data-i18n="skill_docker">Docker & Contenedores</span>
               <div class="skill-bar-wrap" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Docker y Contenedores: 75%">
                 <div class="skill-bar" data-w="75"></div>
               </div>
@@ -370,9 +387,9 @@
     <section id="projects" aria-labelledby="projects-heading">
       <div class="section-inner">
         <p class="section-eyebrow">// projects.list</p>
-        <h2 class="section-title" id="projects-heading">Lo que he construido</h2>
+        <h2 class="section-title" id="projects-heading" data-i18n="projects_title">Lo que he construido</h2>
         <div class="divider" aria-hidden="true"></div>
-        <p class="section-desc" style="margin-bottom:2.5rem">
+        <p class="section-desc" style="margin-bottom:2.5rem" data-i18n="projects_desc">
           Proyectos reales del proceso de aprendizaje. Cada uno representa un reto nuevo.
         </p>
 
@@ -386,8 +403,8 @@
               </div>
             </div>
             <div class="project-body">
-              <h3 class="project-title">Tribuna Global — ChatBot de Fútbol</h3>
-              <p class="project-desc">
+              <h3 class="project-title" data-i18n="p1_title">Tribuna Global — ChatBot de Fútbol</h3>
+              <p class="project-desc" data-i18n-html="p1_desc">
                 Sistema inteligente con IA generativa para análisis de percepción y estadísticas de futbolistas.
                 Integra flujos conversacionales con <strong>LangChain</strong>, interfaz en <strong>Streamlit</strong> y despliegue modular contenerizado con <strong>Docker Compose</strong>.
               </p>
@@ -401,7 +418,7 @@
               <div class="project-links">
                 <a href="https://github.com/DanielGamboa-10/ChatBot-Futbol" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                  Ver en GitHub
+                  <span data-i18n="view_github">Ver en GitHub</span>
                 </a>
               </div>
             </div>
@@ -416,8 +433,8 @@
               </div>
             </div>
             <div class="project-body">
-              <h3 class="project-title">RentaTools — Alquiler de Maquinaria</h3>
-              <p class="project-desc">
+              <h3 class="project-title" data-i18n="p2_title">RentaTools — Alquiler de Maquinaria</h3>
+              <p class="project-desc" data-i18n-html="p2_desc">
                 Plataforma de backend empresarial basada en un <strong>Monolito Modular</strong> con <strong>Arquitectura Hexagonal (Puertos y Adaptadores)</strong> y <strong>DDD</strong>. 
                 Seguridad con Spring Security 6.5 (JWT), migraciones con Flyway, pruebas con ArchUnit y containerización con Docker Compose.
               </p>
@@ -432,7 +449,7 @@
               <div class="project-links">
                 <a href="https://github.com/castillokfirex/Proyecto_RentaHerramientas_kevin_castillo_daniel_gamboa" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                  Ver en GitHub (Co-Dev)
+                  <span data-i18n="view_github_codev">Ver en GitHub (Co-Dev)</span>
                 </a>
               </div>
             </div>
@@ -443,17 +460,17 @@
             <div class="project-img" aria-hidden="true">
               <div class="project-img-placeholder">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                <span>🔐 Proyecto SICA</span>
+                <span data-i18n="p3_badge">🔐 Proyecto SICA</span>
               </div>
             </div>
             <div class="project-body">
-              <h3 class="project-title">SICA — Control de Acceso</h3>
-              <p class="project-desc">
+              <h3 class="project-title" data-i18n="p3_title">SICA — Control de Acceso</h3>
+              <p class="project-desc" data-i18n="p3_desc">
                 Sistema de control de acceso para zonas de alta seguridad en Java Puro con JDBC.
                 Implementa Arquitectura Hexagonal, Vertical Slicing, persistencia desacoplada y RBAC empresarial.
               </p>
               <ul class="project-stack" role="list">
-                <li class="project-tag">Java Puro</li>
+                <li class="project-tag" data-i18n="tag_pure_java">Java Puro</li>
                 <li class="project-tag">JDBC</li>
                 <li class="project-tag">Hexagonal</li>
                 <li class="project-tag">RBAC</li>
@@ -462,7 +479,7 @@
               <div class="project-links">
                 <a href="https://github.com/DanielGamboa-10/Proyecto_SICA" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                  Ver en GitHub
+                  <span data-i18n="view_github">Ver en GitHub</span>
                 </a>
               </div>
             </div>
@@ -478,7 +495,7 @@
             </div>
             <div class="project-body">
               <h3 class="project-title">Metrolínea Live</h3>
-              <p class="project-desc">
+              <p class="project-desc" data-i18n-html="p4_desc">
                 Monitoreo y geolocalización en tiempo real para transporte público desarrollado para la <strong>Hackathon Metrolínea</strong>.
                 Estimación de tiempos y detección de incidentes mediante visión por computador (YOLOv8).
               </p>
@@ -492,7 +509,7 @@
               <div class="project-links">
                 <a href="https://github.com/DanielGamboa-10/Proyecto_Metrolinea_Python" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                  Ver en GitHub
+                  <span data-i18n="view_github">Ver en GitHub</span>
                 </a>
               </div>
             </div>
@@ -507,8 +524,8 @@
               </div>
             </div>
             <div class="project-body">
-              <h3 class="project-title">Banco Acme — Autogestión Bancaria</h3>
-              <p class="project-desc">
+              <h3 class="project-title" data-i18n="p5_title">Banco Acme — Autogestión Bancaria</h3>
+              <p class="project-desc" data-i18n="p5_desc">
                 Aplicación web SPA para administración de cuentas, transferencias y extractos bancarios.
                 Construida con JavaScript Vanilla, modularización de componentes y persistencia local reactiva.
               </p>
@@ -521,7 +538,7 @@
               <div class="project-links">
                 <a href="https://github.com/Jsebastiansalas/ProyectoAcmebank_JavaScript_Salas-Sebastian-Jaimes-Daniel2" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                  Ver en GitHub (Co-Dev)
+                  <span data-i18n="view_github_codev">Ver en GitHub (Co-Dev)</span>
                 </a>
               </div>
             </div>
@@ -536,21 +553,21 @@
               </div>
             </div>
             <div class="project-body">
-              <h3 class="project-title">Simulación F1 — Java Puro</h3>
-              <p class="project-desc">
+              <h3 class="project-title" data-i18n="p6_title">Simulación F1 — Java Puro</h3>
+              <p class="project-desc" data-i18n="p6_desc">
                 Motor de simulación y administración de escuderías, monoplazas y clasificación en Java SE Puro sin dependencias.
                 Uso intensivo de estructuras de datos en memoria (Maps/HashMaps), Maven y automatización por scripts.
               </p>
               <ul class="project-stack" role="list">
                 <li class="project-tag">Java SE</li>
                 <li class="project-tag">Maven</li>
-                <li class="project-tag">Estructuras de Datos</li>
+                <li class="project-tag" data-i18n="tag_data_struct">Estructuras de Datos</li>
                 <li class="project-tag">Batch Scripts</li>
               </ul>
               <div class="project-links">
                 <a href="https://github.com/DanielGamboa-10/Formula-1" target="_blank" rel="noopener noreferrer" class="project-link" aria-label="Ver código en GitHub">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                  Ver en GitHub
+                  <span data-i18n="view_github">Ver en GitHub</span>
                 </a>
               </div>
             </div>
@@ -563,11 +580,11 @@
     <section id="contact" aria-labelledby="contact-heading">
       <div class="section-inner">
         <div class="contact-wrap reveal">
-          <p class="section-eyebrow" style="text-align:center">// contacto.sh</p>
-          <h2 class="contact-title" id="contact-heading">
+          <p class="section-eyebrow" style="text-align:center" data-i18n="contact_eyebrow">// contacto.sh</p>
+          <h2 class="contact-title" id="contact-heading" data-i18n-html="contact_title">
             ¿Le damos a esto<br /><span>juntos?</span>
           </h2>
-          <p class="contact-desc">
+          <p class="contact-desc" data-i18n="contact_desc">
             Estoy buscando mi primera práctica y listo para aportar desde el día uno.
             Si tienes un proyecto, un equipo o simplemente quieres conectar — escríbeme.
           </p>
@@ -582,7 +599,7 @@
             </a>
             <button type="button" class="social-btn" id="contactCvBtn" aria-label="Descargar CV de Daniel en Español o Inglés">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Descargar CV (ES / EN)
+              <span data-i18n="contact_cv_btn">Descargar CV (ES / EN)</span>
             </button>
           </div>
         </div>
@@ -592,11 +609,11 @@
     <!-- FOOTER -->
     <footer role="contentinfo">
       <a href="#hero" class="footer-logo">daniel<span>.dev</span></a>
-      <span class="footer-copy">© 2026 Daniel Gamboa (Daniel Eduardo Jaimes Gamboa) — Bucaramanga, Colombia</span>
+      <span class="footer-copy" data-i18n="footer_copy">© 2026 Daniel Gamboa (Daniel Eduardo Jaimes Gamboa) — Bucaramanga, Colombia</span>
       <nav class="footer-links" aria-label="Links del footer">
-        <a href="#about">Sobre mí</a>
-        <a href="#skills">Skills</a>
-        <a href="#projects">Proyectos</a>
+        <a href="#about" data-i18n="nav_about">Sobre mí</a>
+        <a href="#skills" data-i18n="nav_skills">Skills</a>
+        <a href="#projects" data-i18n="nav_projects">Proyectos</a>
       </nav>
     </footer>
 
@@ -608,8 +625,8 @@
     <div class="cv-modal-dialog">
       <div class="cv-modal-header">
         <div>
-          <h3 id="cvModalTitle" class="cv-modal-title">Descargar Curriculum Vitae</h3>
-          <p class="cv-modal-subtitle">Selecciona tu idioma preferido / Select your preferred language</p>
+          <h3 id="cvModalTitle" class="cv-modal-title" data-i18n="modal_title">Descargar Curriculum Vitae</h3>
+          <p class="cv-modal-subtitle" data-i18n="modal_subtitle">Selecciona tu idioma preferido / Select your preferred language</p>
         </div>
         <button class="cv-modal-close" id="cvModalClose" aria-label="Cerrar ventana">✕</button>
       </div>
@@ -621,13 +638,13 @@
             <span class="cv-thumb-badge">🇪🇸 Español</span>
           </div>
           <div class="cv-card-info">
-            <h4>Versión en Español</h4>
-            <p>Desarrollador Full Stack — Perfil técnico, formación y proyectos en español.</p>
+            <h4 data-i18n="modal_es_title">Versión en Español</h4>
+            <p data-i18n="modal_es_desc">Desarrollador Full Stack — Perfil técnico, formación y proyectos en español.</p>
             <div class="cv-card-actions">
-              <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="btn-cv-download btn-download-trigger" data-lang="es">
+              <a href="assets/Daniel_Jaimes_CV_ES.pdf" download="Daniel_Jaimes_CV_ES.pdf" class="btn-cv-download btn-download-trigger" data-lang="es" data-i18n="modal_btn_pdf_es">
                 📄 Descargar PDF
               </a>
-              <a href="assets/cv_daniel_jaimes_es.png" download="cv_daniel_jaimes_es.png" class="btn-cv-download-secondary btn-download-trigger" data-lang="es">
+              <a href="assets/cv_daniel_jaimes_es.png" download="cv_daniel_jaimes_es.png" class="btn-cv-download-secondary btn-download-trigger" data-lang="es" data-i18n="modal_btn_img_es">
                 🖼️ Descargar Imagen
               </a>
             </div>
@@ -641,13 +658,13 @@
             <span class="cv-thumb-badge">🇺🇸 English</span>
           </div>
           <div class="cv-card-info">
-            <h4>English Version</h4>
-            <p>Full Stack Developer — Full technical profile, training & projects in English.</p>
+            <h4 data-i18n="modal_en_title">English Version</h4>
+            <p data-i18n="modal_en_desc">Full Stack Developer — Full technical profile, training & projects in English.</p>
             <div class="cv-card-actions">
-              <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="btn-cv-download btn-download-trigger" data-lang="en">
+              <a href="assets/Daniel_Jaimes_CV_EN.pdf" download="Daniel_Jaimes_CV_EN.pdf" class="btn-cv-download btn-download-trigger" data-lang="en" data-i18n="modal_btn_pdf_en">
                 📄 Download PDF
               </a>
-              <a href="assets/cv_daniel_jaimes_en.png" download="cv_daniel_jaimes_en.png" class="btn-cv-download-secondary btn-download-trigger" data-lang="en">
+              <a href="assets/cv_daniel_jaimes_en.png" download="cv_daniel_jaimes_en.png" class="btn-cv-download-secondary btn-download-trigger" data-lang="en" data-i18n="modal_btn_img_en">
                 🖼️ Download Image
               </a>
             </div>
@@ -658,7 +675,7 @@
   </div>
 
   <!-- Script principal del portafolio (cargado con DOMContentLoaded) -->
-  <script src="main.js?v=2.1"></script>
+  <script src="main.js?v=2.2"></script>
 
   <!-- Respaldo de seguridad garantizado para mostrar el portafolio -->
   <script>
